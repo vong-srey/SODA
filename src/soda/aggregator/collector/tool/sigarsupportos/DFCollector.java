@@ -1,10 +1,13 @@
-package soda.aggregator.collector.tool;
+package soda.aggregator.collector.tool.sigarsupportos;
 
 import java.util.Map;
 
+import soda.aggregator.collector.tool.CollectorTool;
+
 
 /**
- * Defining the interface of each tool features
+ * Collector Tool that responsible to collect the disk usages (Free, used in %)
+ * This tool aggregates Sigar.Df
  * 
  * Classes and Interfaces in this package is implemented using Sigar.
  * Sigar is supporting Linux, Windows, HPUX, Solaris, AIX, FreeBSD, MacOSX.
@@ -19,7 +22,18 @@ import java.util.Map;
  * @author Vong Vithyea Srey
  *
  */
-public interface CollectorTool {
-	public Map<String, String> getPerformance();
-	public void recording();
+public class DFCollector implements CollectorTool{
+
+	@Override
+	public Map<String, String> getPerformance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void recording() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
