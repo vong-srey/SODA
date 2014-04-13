@@ -16,39 +16,70 @@ import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
  *
  */
 public class SigarSupportCollectorFactory implements CollectorFactory{
-
-	public SigarSupportCollectorFactory(){
-		System.out.print("this is Linux collector");
-	}
 	
-	
+	/**
+	 * producing the CPU collector and logger for this OS
+	 * @return collector and logger of CPU performance for this OS
+	 */
 	@Override
 	public CPUCollector getCPUCollector() {
 		return new CPUCollector();
 	}
 
+	
+	
+	/**
+	 * producing the Memory collector and logger for this OS
+	 * @return collector and logger of Memory performance for this OS
+	 */
 	@Override
 	public MemoryCollector getMemoryCollector() {
 		// TODO Auto-generated method stub
 		return new MemoryCollector();
 	}
 
+	
+	
+	/**
+	 * producing the DF collector and logger for this OS (DF is producing used space and free space of each HDD. Same as df command in Linux/Unix)
+	 * @return collector and logger of DF performance for this OS
+	 */
 	@Override
 	public DFCollector getDFCollector() {
 		// TODO Auto-generated method stub
 		return new DFCollector();
 	}
 
+	
+	
+	/**
+	 * producing the Disk collector and logger for this OS (the amount of writing and reading, IO)
+	 * @return collector and logger of Disk performance for this OS
+	 */
 	@Override
 	public DiskCollector getDiskCollector() {
 		// TODO Auto-generated method stub
 		return new DiskCollector();
 	}
 
+	
+	
+	/**
+	 * producing the Network collector and logger for this OS (TCP, and UDP traffic volumes)
+	 * @return collector and logger of Network performance for this OS
+	 */
 	@Override
 	public NetworkCollector getNetworkCollector() {
 		// TODO Auto-generated method stub
 		return new NetworkCollector();
+	}
+	
+	
+	private void test1(){
+		
+	}
+	protected int test2(){
+		return 0;
 	}
 
 }
