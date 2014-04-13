@@ -73,13 +73,5 @@ public class SigarSupportCollectorFactory implements CollectorFactory{
 		// TODO Auto-generated method stub
 		return new NetworkCollector();
 	}
-	
-	
-	private void test1(){
-		
-	}
-	protected int test2(){
-		return 0;
-	}
 
 }
