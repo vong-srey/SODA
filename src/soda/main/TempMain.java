@@ -1,13 +1,19 @@
 package soda.main;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+
 import soda.aggregator.collector.factory.CollectorFactory;
 import soda.aggregator.collector.factory.CollectorFactoryManager;
 import soda.aggregator.collector.tool.CollectorTool;
-import soda.config.ConfigReader;
+import soda.util.config.ConfigReader;
+import soda.util.logger.CustodianDailyRollingFileAppender;
+import soda.util.logger.LoggerBuilder;
 
 
 /**
@@ -21,9 +27,9 @@ public class TempMain {
 	public static String CONFIG_PATH = null;
 	
 	
-	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		
-		// get the config file path, from -config flag
+		// 1). get the config file path, from -config flag
 		List<String> argsList = Arrays.asList(args);
 		int configIndex = argsList.indexOf("-config");
 		if(configIndex >= 0){
@@ -31,18 +37,41 @@ public class TempMain {
 			ConfigReader.setDefaultConfigPath(CONFIG_PATH);
 		}
 		
+		
+		// 2). config the appLogger
+		LoggerBuilder.setAppenderForAppLoggerFromDefaultConfigFile();
+		
+		
+		
+		// 3). Instantiate all available Collectors, and start the collection and logging.
 		CollectorFactory cf = CollectorFactoryManager.getCollectorFactory();
+		List<CollectorTool> collectors = CollectorFactoryManager.getAllCollectors(cf);
 		
-		List<CollectorTool> collectors = new ArrayList<CollectorTool>();
-		CollectorTool cpu = cf.getCPUCollector();
-		collectors.add(cpu);
-		collectors.add(cf.getDFCollector());
-		collectors.add(cf.getDiskCollector());
-		collectors.add(cf.getMemoryCollector());
-		collectors.add(cf.getNetworkCollector());
-		
-		
-		
+		for(CollectorTool ct : collectors){
+			ct.start();
+		}	
 		
 	}
+	
+	
+	// how to config a logger
+	// need to remove when complete the logging tasks
+	public static void logger(){
+		CustodianDailyRollingFileAppender a = new CustodianDailyRollingFileAppender();
+        a.setName("TESTLOG");
+        a.setFile("/home/adminuser/Desktop/testlog/mylog.log");
+        a.setAppend(true);
+        a.setImmediateFlush(true);
+        a.setMaxNumberOfDays("2");
+        a.setCompressBackups("true");
+        a.setDatePattern("'.'yyyy-MM-dd");
+        String pattern = "%d{dd MMM yyyy HH:mm:ss,SSS} %m%n";
+        PatternLayout ly = new PatternLayout();
+        ly.setConversionPattern(pattern);
+        a.setLayout(ly);
+        a.activateOptions();
+        Logger.getRootLogger().addAppender(a);
+	}
+	
+	
 }
