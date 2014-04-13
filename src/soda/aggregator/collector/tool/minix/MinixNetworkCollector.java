@@ -1,6 +1,7 @@
 package soda.aggregator.collector.tool.minix;
 
 import java.util.Map;
+import java.util.Set;
 
 import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
 
@@ -20,7 +21,7 @@ import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
 public class MinixNetworkCollector extends NetworkCollector{
 
 	@Override
-	public Map<String, String> getPerformance() {
+	public Set<Map<String, String>> getPerformance() {
 		// TODO Auto-generated method stub
 		return null;
 	}
