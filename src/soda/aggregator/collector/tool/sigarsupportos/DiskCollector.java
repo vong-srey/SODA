@@ -1,8 +1,19 @@
 package soda.aggregator.collector.tool.sigarsupportos;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
+
+import org.hyperic.sigar.FileSystem;
+import org.hyperic.sigar.FileSystemUsage;
+import org.hyperic.sigar.NfsFileSystem;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
 
 import soda.aggregator.collector.tool.CollectorTool;
+import soda.util.logger.LoggerBuilder;
 
 
 /**
@@ -22,18 +33,83 @@ import soda.aggregator.collector.tool.CollectorTool;
  * @author Vong Vithyea Srey
  *
  */
-public class DiskCollector implements CollectorTool{
+public class DiskCollector extends CollectorTool{
 
-	@Override
-	public Map<String, String> getPerformance() {
-		// TODO Auto-generated method stub
-		return null;
+
+	/**
+	 * configure the logger during this object instantiation
+	 */
+	public DiskCollector(){
+		configureLogger();
+		LoggerBuilder.getAppLogger().info("DiskCollector is instantiated successfully");
 	}
 
-	@Override
-	public void recording() {
-		// TODO Auto-generated method stub
+	
+	
+	/**
+	 * a helper method to collect data for the give Volume (fs)
+	 * @param fs - sigar.FileSystem Object represent a FileSystem (or a Volume)
+	 * @return a map (LinkedHashMap) of "Performance Description" (as a key) and "Performance Value" for the given volume (fs)
+	 */
+	public Map<String, String> getPerformanceOfGivenVolume(FileSystem fs) throws SigarException {
+		Sigar sigar = new Sigar();
+
+		Map<String, String> performance = new LinkedHashMap<String, String>();
 		
+        FileSystemUsage volume = sigar.getFileSystemUsage(fs.getDirName());
+
+		// get the volume name
+		String name = fs.getDevName();
+		// if there's no "/" => substring start from 0 (-1 + 1)
+		// else it will start from index + 1 ("/" will not be included)
+		name = name.substring(name.lastIndexOf("/") + 1);
+		
+		performance.put(name + "-R_In", String.valueOf(volume.getDiskReads()) );
+		performance.put(name + "-W_Out", String.valueOf(volume.getDiskWrites()) );
+		
+		// if this getDiskReadBytes is not implemented for this volume (fs), then add "-"
+		// otherwise add the actual number
+		long temp = volume.getDiskReadBytes();
+		if ( temp == Sigar.FIELD_NOTIMPL) {
+			performance.put(name + "-Data_R", "-");
+		} else {
+	        // just use Sigar.formatSize(long size) if we want to format GB or MB automatically
+			performance.put(name + "-Data_R", String.valueOf(temp));
+		}
+		
+		// if this getDiskWriteBytes is not implemented for this volume (fs), then add "-"
+		// otherwise add the actual number
+		temp = volume.getDiskWriteBytes();
+		if (temp == Sigar.FIELD_NOTIMPL) {
+			performance.put(name + "-Data_W", "-");
+		} else {
+			performance.put(name + "-Data_W", Sigar.formatSize(temp));
+		}
+		
+		return performance;
+    }
+	
+	
+	
+	/**
+	 * collect a set of maps. A map contains "Performance Description" (as a key) and "Performance Value" from the implemented CollectorTool
+	 * @return a set of maps. a map (LinkedHashMap) contains "Performance Description" (as a key) and "Performance Value" from the implemented CollectorTool. Each set of map represent the data of each different component (e.g. a set of CPU0, set of CPU1 and so on)
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
+	 */
+	@Override
+	public Set<Map<String, String>> getPerformance() throws SigarException{
+		Sigar sigar = new Sigar();
+		Set<Map<String,String>> perfSet = new LinkedHashSet<Map<String, String>>();
+		
+		FileSystem[] fslist = sigar.getFileSystemList();
+		
+		for(int i=0; i < fslist.length; i++){
+			if(fslist[i].getType() == FileSystem.TYPE_LOCAL_DISK){
+				perfSet.add(this.getPerformanceOfGivenVolume(fslist[i]));
+			}
+		}
+
+		return perfSet; 
 	}
 
 }
