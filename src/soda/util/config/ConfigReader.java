@@ -29,7 +29,7 @@ public class ConfigReader {
 	/**
 	 * the default path to find config.cfg
 	 */
-	private static String DEFAULT_CONFIG_PATH = "/etc/soda/config/config.cfg";
+	private static String DEFAULT_CONFIG_PATH = "./config.cfg";
 	
 	
 	

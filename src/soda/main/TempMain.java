@@ -1,16 +1,13 @@
 package soda.main;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import soda.aggregator.collector.factory.CollectorFactory;
-import soda.aggregator.collector.factory.CollectorFactoryManager;
-import soda.aggregator.collector.tool.CollectorTool;
+import soda.aggregator.core.Aggregator;
 import soda.util.config.ConfigReader;
 import soda.util.logger.CustodianDailyRollingFileAppender;
 import soda.util.logger.LoggerBuilder;
@@ -29,7 +26,7 @@ public class TempMain {
 	
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		
-		// 1). get the config file path, from -config flag
+		// 1). get the config file path, from -config flag (if there is)
 		List<String> argsList = Arrays.asList(args);
 		int configIndex = argsList.indexOf("-config");
 		if(configIndex >= 0){
@@ -43,13 +40,9 @@ public class TempMain {
 		
 		
 		
-		// 3). Instantiate all available Collectors, and start the collection and logging.
-		CollectorFactory cf = CollectorFactoryManager.getCollectorFactory();
-		List<CollectorTool> collectors = CollectorFactoryManager.getAllCollectors(cf);
-		
-		for(CollectorTool ct : collectors){
-			ct.start();
-		}	
+		// 3). Instantiate aggregator and start collecting and logging machine performance.
+		Aggregator aggregator = new Aggregator();
+		aggregator.runAggregation();
 		
 	}
 	
