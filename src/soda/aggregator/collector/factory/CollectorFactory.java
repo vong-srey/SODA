@@ -1,5 +1,7 @@
 package soda.aggregator.collector.factory;
 
+import org.hyperic.sigar.SigarException;
+
 import soda.aggregator.collector.tool.sigarsupportos.CPUCollector;
 import soda.aggregator.collector.tool.sigarsupportos.DFCollector;
 import soda.aggregator.collector.tool.sigarsupportos.DiskCollector;
@@ -23,38 +25,43 @@ public interface CollectorFactory {
 	/**
 	 * producing the CPU collector and logger for this OS
 	 * @return collector and logger of CPU performance for this OS
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
-	public CPUCollector	getCPUCollector();
+	public CPUCollector	getCPUCollector() throws SigarException;
 	
 	
 	
 	/**
 	 * producing the Memory collector and logger for this OS
 	 * @return collector and logger of Memory performance for this OS
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
 	 */
-	public MemoryCollector getMemoryCollector();
+	public MemoryCollector getMemoryCollector() throws SigarException;
 	
 	
 	
 	/**
 	 * producing the DF collector and logger for this OS (DF is producing used space and free space of each HDD. Same as df command in Linux/Unix)
 	 * @return collector and logger of DF performance for this OS
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
-	public DFCollector getDFCollector();
+	public DFCollector getDFCollector() throws SigarException;
 	
 	
 	
 	/**
 	 * producing the Disk collector and logger for this OS (the amount of writing and reading, IO)
 	 * @return collector and logger of Disk performance for this OS
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
-	public DiskCollector getDiskCollector();
+	public DiskCollector getDiskCollector() throws SigarException;
 	
 	
 	
 	/**
 	 * producing the Network collector and logger for this OS (TCP, and UDP traffic volumes)
 	 * @return collector and logger of Network performance for this OS
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
-	public NetworkCollector getNetworkCollector();
+	public NetworkCollector getNetworkCollector() throws SigarException;
 }

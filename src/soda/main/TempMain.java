@@ -4,6 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.daemon.Daemon;
+import org.apache.commons.daemon.DaemonContext;
+import org.apache.commons.daemon.DaemonInitException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
@@ -19,7 +22,7 @@ import soda.util.logger.LoggerBuilder;
  * @author Vong Vithyea Srey
  *
  */
-public class TempMain {
+public class TempMain implements Daemon{
 	
 	public static String CONFIG_PATH = null;
 	
@@ -64,6 +67,35 @@ public class TempMain {
         a.setLayout(ly);
         a.activateOptions();
         Logger.getRootLogger().addAppender(a);
+	}
+
+
+	@Override
+	public void destroy() {
+		System.out.println("SODA Daemon has been killed...");
+		
+	}
+
+
+	@Override
+	public void init(DaemonContext arg0) throws DaemonInitException, Exception {
+		System.out.println("Initialising SODA Daemon...");
+		
+	}
+
+
+	@Override
+	public void start() throws Exception {
+		System.out.println("Starting SODA Daemon...");
+		main(null);
+		
+	}
+
+
+	@Override
+	public void stop() throws Exception {
+		System.out.println("Stopping SODA Daemon...");
+		
 	}
 	
 	

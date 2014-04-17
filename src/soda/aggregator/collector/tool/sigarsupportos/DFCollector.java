@@ -1,5 +1,6 @@
 package soda.aggregator.collector.tool.sigarsupportos;
 
+import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -36,8 +37,9 @@ public class DFCollector extends CollectorTool{
 	
 	/**
 	 * configure the logger during this object instantiation
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
 	 */
-	public DFCollector(){
+	public DFCollector() throws SigarException{
 		configureLogger();
 		LoggerBuilder.getAppLogger().info("DFCollector is instantiated successfully");
 	}
@@ -47,10 +49,11 @@ public class DFCollector extends CollectorTool{
 	/**
 	 * a helper method to convert the size in MB (in long) to GB 
 	 * @param size in MB
-	 * @return String of size in GB
+	 * @return String of size in Byte
 	 */
-	public static String sigarFormatSize(long size){
-		return Sigar.formatSize(size * 1024);
+	public static long megaByteToByte(long size){
+		//return Sigar.formatSize(size * 1024);  (Sigar.formatSize(sizeInByte) will return according the the value, MB, GB or TB)
+		return size * 1024;
 	}
 	
 	
@@ -85,15 +88,28 @@ public class DFCollector extends CollectorTool{
 		// else it will start from index + 1 ("/" will not be included)
 		name = name.substring(name.lastIndexOf("/") + 1);
 		
-		performance.put(name + "-Size", sigarFormatSize(volume.getTotal()));
+		performance.put(DEVICE_NAME, "DF-"+name);
+		performance.put(DESCRIPTION, "Size-Byte,Used-Byte,Avail-Byte,UsedInPerc-%");
+		
+		strBuilder.setLength(0);
+		
+		strBuilder.append(megaByteToByte(volume.getTotal()));
+		strBuilder.append(" ");
 		
 		long temp = volume.getTotal() - volume.getFree();
-		performance.put(name + "-Used", sigarFormatSize(temp));
+		strBuilder.append(megaByteToByte(temp));
+		strBuilder.append(" ");
 		
-		performance.put(name + "-Avail", sigarFormatSize(volume.getAvail()));
+		strBuilder.append(megaByteToByte(volume.getAvail()));
+		strBuilder.append(" ");
 		
+		DecimalFormat d = new DecimalFormat("0.000");
 		temp = (long)(volume.getUsePercent() * 100);
-		performance.put(name + "-UsedInPerc", temp + "%");
+		strBuilder.append(d.format(temp));
+		
+		performance.put(VALUE, strBuilder.toString());
+		
+		strBuilder.setLength(0);
 		
 		return performance;
     }
@@ -113,7 +129,12 @@ public class DFCollector extends CollectorTool{
 		FileSystem[] fslist = sigar.getFileSystemList();
 		
 		for(int i=0; i < fslist.length; i++){
-			perfSet.add(getPerformanceOfGivenVolume(fslist[i]));
+			// there's no reason to add an empty map into the set
+			// the empty map, means the device is on network and we can't access that device for some reasons (no permission to access, not available, etc)
+			Map<String, String> performance = getPerformanceOfGivenVolume(fslist[i]);
+			if(!performance.isEmpty()){
+				perfSet.add(performance);
+			}
 		}
 
 		return perfSet; 

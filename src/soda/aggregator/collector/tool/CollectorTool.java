@@ -1,6 +1,7 @@
 package soda.aggregator.collector.tool;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	/**
 	 * a logger that will log the performance into file system
 	 */
-	protected Logger logger;
+	protected Map<String, Logger> loggers;
 	
 	
 	
@@ -66,6 +67,21 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 * appLogger != logger
 	 */
 	private Logger appLogger = LoggerBuilder.getAppLogger();
+	
+	
+	
+	/**
+	 * 
+	 */
+	protected final String DEVICE_NAME = "deviceName";
+	/**
+	 * 
+	 */
+	protected final String DESCRIPTION = "description";
+	/**
+	 * 
+	 */
+	protected final String VALUE = "value";
 	
 	
 	
@@ -88,23 +104,35 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	/**
 	 * Configure the logger to get it ready for log the performances into file system.
 	 * This method is supposed to invoke during the Constructor
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
 	 */
-	public void configureLogger(){
+	public void configureLogger() throws SigarException{
 		LoggerBuilder lb = new LoggerBuilder();
+		
+		// getPerforamnce, because we want to know how many devices out there (e.g.: for CPU, there can be CPU0, CPU1, ... and Disk there can be dev01, dev02, /tmp, /var ...)
+		// the put those devices name sinto the "devices" list.
+		// because we need to create a Logger for each device
+		Set<Map<String, String>> performances = getPerformance();
+		List<String> devicesNames = new ArrayList<String>();
 		
 		Object obj = this;
 		if(obj instanceof CPUCollector){
-			lb.setAppenderFromDefaultConfigFile(AVAILABLE_TOOLS.get(0));
+			devicesNames.add(AVAILABLE_TOOLS.get(0));
 		} else if(obj instanceof DFCollector){
-			lb.setAppenderFromDefaultConfigFile(AVAILABLE_TOOLS.get(1));
+			devicesNames.add(AVAILABLE_TOOLS.get(1));
 		} else if(obj instanceof DiskCollector){
-			lb.setAppenderFromDefaultConfigFile(AVAILABLE_TOOLS.get(2));
+			devicesNames.add(AVAILABLE_TOOLS.get(2));
 		} else if(obj instanceof MemoryCollector){
-			lb.setAppenderFromDefaultConfigFile(AVAILABLE_TOOLS.get(3));
+			devicesNames.add(AVAILABLE_TOOLS.get(3));
 		} else if(obj instanceof NetworkCollector){
-			lb.setAppenderFromDefaultConfigFile(AVAILABLE_TOOLS.get(4));
+			devicesNames.add(AVAILABLE_TOOLS.get(4));
 		}
-		logger = lb.getLogger();
+		
+		for(Map<String, String> per : performances){
+			devicesNames.add(per.get(DEVICE_NAME));
+		}
+		
+		loggers = lb.getLoggersMapFromDefaultConfigFile(devicesNames);
 	}
 	
 	
@@ -114,20 +142,22 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 *	@param performance is a Set of Map. A Map object (inside that Set) has Key as a "Description of the performance" (e.g. CPU0-Nice) and Valuse as the value for that description. Each set of map represent the data of each different component (e.g. a set of CPU0, set of CPU1 and so on)
 	 */
 	public void recordPerformance(Set<Map<String, String>> performances){
-		// put on the performance key=value into a string, before log to the file system using logger object.
-		StringBuilder sb = new StringBuilder();
 		
-		for(Map<String,String> map : performances){
-			for(Map.Entry<String, String> entry : map.entrySet()){
-				sb.append(entry.getKey());
-				sb.append("=");
-				sb.append(entry.getValue());
-				sb.append(" ");
-			}
-			sb.append("\t");
+		for(Map<String,String> perf : performances){
+			String deviceName = perf.remove(DEVICE_NAME);
+			Logger log = loggers.get(deviceName);
+					
+			strBuilder.setLength(0);
+			strBuilder.append(deviceName);
+			strBuilder.append(" ");
+			strBuilder.append(perf.get(DESCRIPTION));
+			strBuilder.append(" ");
+			strBuilder.append(perf.get(VALUE));
+			
+			log.info(strBuilder);
+			
+			strBuilder.setLength(0);
 		}
-		
-		logger.info(sb);
 	}
 	
 	

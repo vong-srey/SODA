@@ -1,5 +1,6 @@
 package soda.aggregator.collector.tool.sigarsupportos;
 
+import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -34,8 +35,9 @@ public class CPUCollector extends CollectorTool{
 	
 	/**
 	 * configure the logger during this object instantiation
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
 	 */
-	public CPUCollector(){
+	public CPUCollector() throws SigarException{
 		configureLogger();
 		LoggerBuilder.getAppLogger().info("CPUCollector is instantiated successfully");
 	}
@@ -49,21 +51,27 @@ public class CPUCollector extends CollectorTool{
 	 * @return a map (LinkedHashMap) of "Performance Description" (as a key) and "Performance Value" for the given cpu
 	 */
 	public Map<String, String> getPerformanceOfGivenCpuCore(CpuPerc cpu, String coreIndex) throws SigarException {
-		strBuilder.setLength(0);
 		Map<String, String> performance = new LinkedHashMap<String, String>();
 		
-		// get the each category performance and put into HashMap
-		performance.put(strBuilder.append(coreIndex).append("-User").toString(), CpuPerc.format(cpu.getUser()));
+		performance.put(DEVICE_NAME, coreIndex);
+		performance.put(DESCRIPTION, "User-%,Sys-%,Idle-%,Wait-%,Nice-%,IRQ-%");
+		
+		DecimalFormat d = new DecimalFormat("0.000");
+		
 		strBuilder.setLength(0);
-		performance.put(strBuilder.append(coreIndex).append("-Sys").toString(), CpuPerc.format(cpu.getSys()));
-		strBuilder.setLength(0);
-		performance.put(strBuilder.append(coreIndex).append("-Idle").toString(), CpuPerc.format(cpu.getIdle()));		
-		strBuilder.setLength(0);
-		performance.put(strBuilder.append(coreIndex).append("-Wait").toString(), CpuPerc.format(cpu.getWait()));
-		strBuilder.setLength(0);
-		performance.put(strBuilder.append(coreIndex).append("-Nice").toString(), CpuPerc.format(cpu.getNice()));
-		strBuilder.setLength(0);
-		performance.put(strBuilder.append(coreIndex).append("-IRQ").toString(), CpuPerc.format(cpu.getUser()));
+		strBuilder.append(d.format(cpu.getUser() * 100));
+		strBuilder.append(" ");
+		strBuilder.append(d.format(cpu.getSys() * 100));
+		strBuilder.append(" ");
+		strBuilder.append(d.format(cpu.getIdle() * 100));
+		strBuilder.append(" ");
+		strBuilder.append(d.format(cpu.getWait() * 100));
+		strBuilder.append(" ");
+		strBuilder.append(d.format(cpu.getNice() * 100));
+		strBuilder.append(" ");
+		strBuilder.append(d.format(cpu.getUser() * 100));
+		
+		performance.put(VALUE, strBuilder.toString());
 		strBuilder.setLength(0);
 		
 		return performance;

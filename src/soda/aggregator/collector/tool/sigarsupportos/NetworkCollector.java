@@ -32,7 +32,11 @@ import soda.util.logger.LoggerBuilder;
  */
 public class NetworkCollector extends CollectorTool{
 
-	public NetworkCollector(){
+	/**
+	 * configure the logger during this object instantiation
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
+	 */
+	public NetworkCollector() throws SigarException{
 		configureLogger();
 		LoggerBuilder.getAppLogger().info("NetworkCollector is instantiated successfully");
 	}
@@ -51,18 +55,36 @@ public class NetworkCollector extends CollectorTool{
 		Sigar sigar = new Sigar();
 		Tcp stat = sigar.getTcp();
 		
-		map.put("TCP-ActiveConnOpen", String.valueOf(stat.getActiveOpens()));		// active connection openings
-		map.put("TCP-PassieConnOpen", String.valueOf(stat.getPassiveOpens()));		// passive connection openings
-		map.put("TCP-FailedConnAttempts", String.valueOf(stat.getAttemptFails()));	// failed connection attempts
-		map.put("TCP-ConnResetsReceived", String.valueOf(stat.getEstabResets()));	// connections resets received
-		map.put("TCP-ConnEstablished", String.valueOf(stat.getCurrEstab()));		// connections established
-		map.put("TCP-PcktsReceived", String.valueOf(stat.getInSegs()));				// packets received
-		map.put("TCP-PcktsSent", String.valueOf(stat.getOutSegs()));				// packets set out
-		map.put("TCP-PcktsRetransmited", String.valueOf(stat.getRetransSegs()));	// packets retransmitted
-		map.put("TCP-BadPcktsReceived", String.valueOf(stat.getInErrs()));			// bad packets received
-		map.put("TCP-PcktsResetSent", String.valueOf(stat.getOutRsts()));			// packets resets Sent
+		map.put(this.DEVICE_NAME, "Network-TCP");
+		map.put(this.DESCRIPTION, "ActiveConnOpen,PassieConnOpen,FailedConnAttempts,ConnResetsReceived,ConnEstablished,"
+				+ "PcktsReceived,PcktsSent,PcktsRetransmited,BadPcktsReceived,PcktsResetSent");
+
+		strBuilder.setLength(0);
 		
+		strBuilder.append(stat.getActiveOpens());			// active connection openings
+		strBuilder.append(" ");
+		strBuilder.append(stat.getPassiveOpens());			// passive connection openings
+		strBuilder.append(" ");
+		strBuilder.append(stat.getAttemptFails());			// failed connection attempts
+		strBuilder.append(" ");
+		strBuilder.append(stat.getEstabResets());			// connections resets received
+		strBuilder.append(" ");
+		strBuilder.append(stat.getCurrEstab());				// connections established
+		strBuilder.append(" ");
+		strBuilder.append(stat.getInSegs());				// packets received
+		strBuilder.append(" ");
+		strBuilder.append(stat.getOutSegs());				// packets set out
+		strBuilder.append(" ");
+		strBuilder.append(stat.getRetransSegs());			// packets retransmitted
+		strBuilder.append(" ");
+		strBuilder.append(stat.getInErrs());				// bad packets received
+		strBuilder.append(" ");
+		strBuilder.append(stat.getOutRsts());				// packets resets Sent
+		
+		map.put(VALUE, strBuilder.toString());
 		perfSet.add(map);
+		
+		strBuilder.setLength(0);
 		
 		return perfSet;
 	}

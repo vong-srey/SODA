@@ -38,8 +38,9 @@ public class DiskCollector extends CollectorTool{
 
 	/**
 	 * configure the logger during this object instantiation
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
 	 */
-	public DiskCollector(){
+	public DiskCollector() throws SigarException{
 		configureLogger();
 		LoggerBuilder.getAppLogger().info("DiskCollector is instantiated successfully");
 	}
@@ -64,27 +65,40 @@ public class DiskCollector extends CollectorTool{
 		// else it will start from index + 1 ("/" will not be included)
 		name = name.substring(name.lastIndexOf("/") + 1);
 		
-		performance.put(name + "-R_In", String.valueOf(volume.getDiskReads()) );
-		performance.put(name + "-W_Out", String.valueOf(volume.getDiskWrites()) );
+		performance.put(DEVICE_NAME, "Disk-" + name);
+		performance.put(DESCRIPTION, "R_In-Byte,W_Out-Byte,Data_R,Data_W");
+		
+		strBuilder.setLength(0);
+		
+		strBuilder.append(volume.getDiskReads());
+		strBuilder.append(" ");
+		
+		strBuilder.append(volume.getDiskWrites());
+		strBuilder.append(" ");
 		
 		// if this getDiskReadBytes is not implemented for this volume (fs), then add "-"
 		// otherwise add the actual number
 		long temp = volume.getDiskReadBytes();
 		if ( temp == Sigar.FIELD_NOTIMPL) {
-			performance.put(name + "-Data_R", "-");
+			strBuilder.append("-");
 		} else {
 	        // just use Sigar.formatSize(long size) if we want to format GB or MB automatically
-			performance.put(name + "-Data_R", String.valueOf(temp));
+			strBuilder.append(temp);
 		}
+		strBuilder.append(" ");
 		
 		// if this getDiskWriteBytes is not implemented for this volume (fs), then add "-"
 		// otherwise add the actual number
 		temp = volume.getDiskWriteBytes();
 		if (temp == Sigar.FIELD_NOTIMPL) {
-			performance.put(name + "-Data_W", "-");
+			strBuilder.append("-");
 		} else {
-			performance.put(name + "-Data_W", Sigar.formatSize(temp));
+			strBuilder.append(temp);
 		}
+		
+		performance.put(this.VALUE, strBuilder.toString());
+		
+		strBuilder.setLength(0);
 		
 		return performance;
     }

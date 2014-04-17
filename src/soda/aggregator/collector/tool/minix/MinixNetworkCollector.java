@@ -3,6 +3,8 @@ package soda.aggregator.collector.tool.minix;
 import java.util.Map;
 import java.util.Set;
 
+import org.hyperic.sigar.SigarException;
+
 import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
 
 
@@ -19,6 +21,11 @@ import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
  *
  */
 public class MinixNetworkCollector extends NetworkCollector{
+
+	public MinixNetworkCollector() throws SigarException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public Set<Map<String, String>> getPerformance() {

@@ -35,8 +35,9 @@ public class MemoryCollector extends CollectorTool{
 
 	/**
 	 * configure the logger during this object instantiation
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)SigarException 
 	 */
-	public MemoryCollector(){
+	public MemoryCollector() throws SigarException{
 		configureLogger();
 		LoggerBuilder.getAppLogger().info("MemoryCollector is instantiated successfully");
 	}
@@ -59,20 +60,33 @@ public class MemoryCollector extends CollectorTool{
 		Mem mem   = sigar.getMem();
         Swap swap = sigar.getSwap();
         
-        // add memory Total, Used, Free into the map and perfSet
-        Map<String, String> map = new LinkedHashMap<String, String>();
-        // just use Sigar.formatSize(long size) if we want to format GB or MB automatically
-        map.put("Mem-Total", String.valueOf(mem.getTotal()));
-        map.put("Mem-Used", String.valueOf(mem.getUsed()));
-        map.put("Mem-Free", String.valueOf(mem.getFree()));
-        perfSet.add(map);
         
-        // reuse map for Swap Total, Used, Free and add into perfSet
-        map = new LinkedHashMap<String, String>();
+        Map<String, String> map = new LinkedHashMap<String, String>();
+        
+        map.put(this.DEVICE_NAME, "Memory-Swap");
+        map.put(this.DESCRIPTION, "Total-Byte,Used-Byte,Free-Byte,Swap_Total-Byte,Swap_Used-Byte,Swap_Free-Byte");
+        
+        strBuilder.setLength(0);
+        
+        // add memory Total, Used, Free
         // just use Sigar.formatSize(long size) if we want to format GB or MB automatically
-        map.put("Swap-Total", String.valueOf(swap.getTotal()));
-        map.put("Swap-Used", String.valueOf(swap.getUsed()));
-        map.put("Swap-Free", String.valueOf(swap.getFree()));
+        strBuilder.append(mem.getTotal());
+        strBuilder.append(" ");
+        strBuilder.append(mem.getUsed());
+        strBuilder.append(" ");
+        strBuilder.append(mem.getFree());
+        strBuilder.append(" ");
+        
+        // Swap
+        strBuilder.append(swap.getTotal());
+        strBuilder.append(" ");
+        strBuilder.append(swap.getUsed());
+        strBuilder.append(" ");
+        strBuilder.append(swap.getFree());
+        
+        map.put(this.VALUE, strBuilder.toString());
+        strBuilder.setLength(0);
+        
         perfSet.add(map);
         
         return perfSet;
