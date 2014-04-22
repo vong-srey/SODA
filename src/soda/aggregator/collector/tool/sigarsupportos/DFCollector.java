@@ -75,7 +75,7 @@ public class DFCollector extends CollectorTool{
 			// if nfs can't reply the ping, means this nfs drive can't be accessed.
 			// we are not concerning about this drive anyway. => return empty map
 			if (!nfs.ping()) {
-				LoggerBuilder.getAppLogger().error(nfs.getUnreachableMessage());
+				LoggerBuilder.getAppLogger().error(this.getClass() + ": " + nfs.getUnreachableMessage());
 				return performance;
 			}
 		}
@@ -89,8 +89,12 @@ public class DFCollector extends CollectorTool{
 		name = name.substring(name.lastIndexOf("/") + 1);
 		
 		performance.put(DEVICE_NAME, "DF-"+name);
-		performance.put(DESCRIPTION, "Size-MB,Used-MB,Avail-MB,UsedInPerc-%");
 		
+		/* ***********************************************************************************
+		 * Appending the log data into the strBuilder.
+		 * If you are modifying the order or log data, you also need to modify the logHeader
+		 * in setupLogHeader() method 
+		 * ***********************************************************************************/
 		strBuilder.setLength(0);
 		
 		// getTotal() and getFree() and getAvail() are producing MB result
@@ -141,4 +145,19 @@ public class DFCollector extends CollectorTool{
 		return perfSet; 
 	}
 
+	
+
+	/**
+	 * Setup the description header that will be print out once at the top of every log file.
+	 * The setting up depends on the DeviceCollector
+	 */
+	@Override
+	public void setupLogHeader() {
+		logHeader = "LogTimeStamp\t"
+					+ "DeviceName\t"
+					+ "Size-MB\t"
+					+ "Used-MB\t"
+					+ "Avail-MB\t"
+					+ "UsedInPerc-%";
+	}
 }

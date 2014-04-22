@@ -54,8 +54,6 @@ public class MemoryCollector extends CollectorTool{
 	public Set<Map<String, String>> getPerformance() throws SigarException {
 		Set<Map<String, String>> perfSet = new LinkedHashSet<Map<String, String>>();
 		
-		
-		
 		Sigar sigar = new Sigar();
 		Mem mem   = sigar.getMem();
         Swap swap = sigar.getSwap();
@@ -64,8 +62,12 @@ public class MemoryCollector extends CollectorTool{
         Map<String, String> map = new LinkedHashMap<String, String>();
         
         map.put(this.DEVICE_NAME, "Memory-Swap");
-        map.put(this.DESCRIPTION, "Total-MB,Used-MB,Free-MB,Swap_Total-MB,Swap_Used-MB,Swap_Free-MB");
-        
+
+		/* ***********************************************************************************
+		 * Appending the log data into the strBuilder.
+		 * If you are modifying the order or log data, you also need to modify the logHeader
+		 * in setupLogHeader() method 
+		 * ***********************************************************************************/
         strBuilder.setLength(0);
         
         // add memory Total, Used, Free
@@ -94,4 +96,21 @@ public class MemoryCollector extends CollectorTool{
         return perfSet;
 	}
 
+	
+
+	/**
+	 * Setup the description header that will be print out once at the top of every log file.
+	 * The setting up depends on the DeviceCollector
+	 */
+	@Override
+	public void setupLogHeader() {
+		logHeader = "LogTimeStamp\t"
+					+ "DeviceName\t"
+					+ "Total-MB\t"
+				    + "Used-MB\t"
+				    + "Free-MB\t"
+				    + "Swap_Total-MB\t"
+				    + "Swap_Used-MB\t"
+				    + "Swap_Free-MB";
+	}
 }

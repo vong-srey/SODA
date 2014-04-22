@@ -54,10 +54,14 @@ public class CPUCollector extends CollectorTool{
 		Map<String, String> performance = new LinkedHashMap<String, String>();
 		
 		performance.put(DEVICE_NAME, coreIndex);
-		performance.put(DESCRIPTION, "User-%,Sys-%,Idle-%,Wait-%,Nice-%,IRQ-%");
 		
 		DecimalFormat d = new DecimalFormat("0.0");
 		
+		/* ***********************************************************************************
+		 * Appending the log data into the strBuilder.
+		 * If you are modifying the order or log data, you also need to modify the logHeader
+		 * in setupLogHeader() method 
+		 * ***********************************************************************************/
 		strBuilder.setLength(0);
 		strBuilder.append(d.format(cpu.getUser() * 100));
 		strBuilder.append(" ");
@@ -106,4 +110,21 @@ public class CPUCollector extends CollectorTool{
 		return perfSet;
 	}
 
+	
+
+	/**
+	 * Setup the description header that will be print out once at the top of every log file.
+	 * The setting up depends on the DeviceCollector
+	 */
+	@Override
+	public void setupLogHeader() {
+		logHeader = "LogTimeStamp\t"
+					+ "DeviceName\t"
+					+ "User-%\t"
+					+ "Sys-%\t"
+					+ "Idle-%\t"
+					+ "Wait-%\t"
+					+ "Nice-%\t"
+					+ "IRQ-%";
+	}
 }

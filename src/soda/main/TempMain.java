@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.hyperic.sigar.SigarException;
 
 import soda.aggregator.core.Aggregator;
 import soda.util.config.ConfigReader;
@@ -24,7 +25,7 @@ public class TempMain{
 	public static String CONFIG_PATH = null;
 	
 	
-	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SigarException{
 		
 		// 1). get the config file path, from -config flag (if there is)
 		List<String> argsList = Arrays.asList(args);
@@ -44,6 +45,14 @@ public class TempMain{
 		Aggregator aggregator = new Aggregator();
 		aggregator.runAggregation();
 		
+		
+//		CollectorFactory cf = CollectorFactoryManager.getCollectorFactory();
+//		CollectorTool df = cf.getDFCollector();
+//		df.start();
+//		
+//		CollectorTool ddf = cf.getDiskCollector();
+//		ddf.start();
+//		
 	}
 	
 	

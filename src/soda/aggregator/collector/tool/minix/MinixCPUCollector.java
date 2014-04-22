@@ -13,7 +13,8 @@ import soda.aggregator.collector.tool.sigarsupportos.CPUCollector;
  * This tool aggregates Sigar.CpuInfo
  * 
  * This class is intentionally left unimplemented for the purpose to show how to
- * implement new Collector tool for Minix OS. So, you can do the same for other OS.
+ * implement new CollectorTool for Minix OS. So, you can do the same for other OS.
+ * Then you need to re-implement collectorTool.configureLogger()
  * You also need to implement MinixCollectorFactory.
  * Then you can just change "OS" value in the config file, it will works automatically. 
  * 

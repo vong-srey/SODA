@@ -153,8 +153,8 @@ public class LoggerBuilder {
 	 * set the pattern of the layout that the appender used to produce the log format.
 	 * @param pattern
 	 */
-	public void setLayoutPattern(String pattern){
-		PatternLayout ly = new PatternLayout();
+	public void setLayoutPattern(String pattern, String header){
+		SodaPatternLayout ly = new SodaPatternLayout(header);
 		ly.setConversionPattern(pattern);
 		appender.setLayout(ly);
 	}
@@ -192,7 +192,7 @@ public class LoggerBuilder {
 		setAppend(ConfigReader.getPropertyFrom(configFilePath, appenderName + "LogAppend"));
 		setMaxNumberOfDays(ConfigReader.getPropertyFrom(configFilePath, appenderName + "LogMaxNumberOfDays"));
 		setCompressBackups(ConfigReader.getPropertyFrom(configFilePath, appenderName + "LogCompressBackups"));
-		setLayoutPattern(ConfigReader.getPropertyFrom(configFilePath, appenderName + "LogPattern"));
+		setLayoutPattern(ConfigReader.getPropertyFrom(configFilePath, appenderName + "LogPattern"), "");
 
 		return true;
 	}
@@ -348,22 +348,26 @@ public class LoggerBuilder {
 	
 	/**
 	 * read the config file (given by its path), and set all the CustodianDailyRollingFaileAppender properties.
-	 * @param configFilePath - path to the config file.
 	 * @param devicesNames - a list of all the devices. it will be used to create a logger for each device
+	 * @param header - a header content for SodaPatternLayout (it will print the header on every log file)
 	 * return true if this configFile activates this logger and the appender for this logger can be configured successfully
 	 * throw IllegalArgumentException if the given appenderName doesn't have the corresponding CollectorTool
 	 */
-	public Map<String, Logger> getLoggersMapFromDefaultConfigFile(List<String> devicesNames){
+	public Map<String, Logger> getLoggersMapFromDefaultConfigFile(List<String> devicesNames, String header){
 		// the first element is the Device Collector (e.g. CPUCollector, DiskCollecor, or DFCollecor, or NetworkCollecor, or MemoryCollecor)
 		String deviceCollector = devicesNames.remove(0);
-		
+
+		// check if the deviceCollector is in the AVAILABLE_TOOLS
+		// protect the case that user is giving some bad devicesNames list
 		if(!CollectorTool.AVAILABLE_TOOLS.contains(deviceCollector)){
 			throw new IllegalArgumentException("Given appenderName doesnot have a correspond CollectorTool");
 		}
 	
+		// loggers map (will return this loggers)
 		Map<String, Logger> loggers= new HashMap<String, Logger>();
 		
-		// if it is configured to not log the performance. then just return an empty log
+		// if it is configured to not log the performance. then just return a map containing an empty logger\
+		// empty name logger is not configured to log (so it means it won't do anything)
 		if( ! ConfigReader.getProperty(deviceCollector).equalsIgnoreCase("yes")){
 			Logger temp = Logger.getLogger("");
 			for(String deviceName : devicesNames){
@@ -375,8 +379,8 @@ public class LoggerBuilder {
 		}
 		
 		
-		// read the properties from the config files. the properties are applie to all devices
-		// example, properties for CPU will be applied to all CPU-0, CPU-1, CPU-2, CPU-3
+		// read the properties from the config files. the properties are applied to all devices
+		// example, properties for CPU will be applied to all CPU-0, CPU-1, CPU-2, CPU-3 and so on.
 		String folder = ConfigReader.getProperty(deviceCollector + "LogFolder");
 		if(!folder.endsWith("/")){ 
 			folder = folder + "/";
@@ -396,7 +400,7 @@ public class LoggerBuilder {
 			appTemp.setAppend(isAppend);
 			appTemp.setMaxNumberOfDays(maxNumberOfDays);
 			appTemp.setCompressBackups(compressBackup);
-			PatternLayout ly = new PatternLayout();
+			SodaPatternLayout ly = new SodaPatternLayout(header);
 			ly.setConversionPattern(layoutPattern);
 			appTemp.setLayout(ly);
 			appTemp.activateOptions();

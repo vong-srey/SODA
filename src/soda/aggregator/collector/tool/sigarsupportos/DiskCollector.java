@@ -66,8 +66,12 @@ public class DiskCollector extends CollectorTool{
 		name = name.substring(name.lastIndexOf("/") + 1);
 		
 		performance.put(DEVICE_NAME, "Disk-" + name);
-		performance.put(DESCRIPTION, "R_In-MB,W_Out-MB,Data_R-MB,Data_W-MB");
 		
+		/* ***********************************************************************************
+		 * Appending the log data into the strBuilder.
+		 * If you are modifying the order or log data, you also need to modify the logHeader
+		 * in setupLogHeader() method 
+		 * ***********************************************************************************/
 		strBuilder.setLength(0);
 		
 		// getDiskReads() and write producing Byte result
@@ -130,4 +134,19 @@ public class DiskCollector extends CollectorTool{
 		return perfSet; 
 	}
 
+	
+
+	/**
+	 * Setup the description header that will be print out once at the top of every log file.
+	 * The setting up depends on the DeviceCollector
+	 */
+	@Override
+	public void setupLogHeader() {
+		logHeader = "LogTimeStamp\t"
+					+ "DeviceName\t"
+					+ "R_In-MB\t"
+					+ "W_Out-MB\t"
+					+ "Data_R-MB\t"
+					+ "Data_W-MB";
+	}
 }

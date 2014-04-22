@@ -28,6 +28,8 @@ public class CollectorFactoryManager {
 	
 	public static String COLLECTOR_FACTORY_PACKAGE = "soda.aggregator.collector.factory";
 	
+	public static String SIGAR_SUPPORT_COLLECTOR_PACKAGE = "soda.aggregator.collector.tool.sigarsupportos";
+	
 	public static String COLLECTORTOOL_CLASS_FULLNAME = "class soda.aggregator.collector.tool.CollectorTool";
 	
 	public static Logger appLogger = LoggerBuilder.getAppLogger();

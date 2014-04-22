@@ -56,9 +56,12 @@ public class NetworkCollector extends CollectorTool{
 		Tcp stat = sigar.getTcp();
 		
 		map.put(this.DEVICE_NAME, "Network-TCP");
-		map.put(this.DESCRIPTION, "ActiveConnOpen,PassieConnOpen,FailedConnAttempts,ConnResetsReceived,ConnEstablished,"
-				+ "PcktsReceived,PcktsSent,PcktsRetransmited,BadPcktsReceived,PcktsResetSent");
 
+		/* ***********************************************************************************
+		 * Appending the log data into the strBuilder.
+		 * If you are modifying the order or log data, you also need to modify the logHeader
+		 * in setupLogHeader() method 
+		 * ***********************************************************************************/
 		strBuilder.setLength(0);
 		
 		strBuilder.append(stat.getActiveOpens());			// active connection openings
@@ -89,4 +92,25 @@ public class NetworkCollector extends CollectorTool{
 		return perfSet;
 	}
 
+	
+
+	/**
+	 * Setup the description header that will be print out once at the top of every log file.
+	 * The setting up depends on the DeviceCollector
+	 */
+	@Override
+	public void setupLogHeader() {
+		logHeader = "LogTimeStamp\t"
+					+ "DeviceName\t"
+					+ "ActiveConnOpen\t"
+					+ "PassieConnOpen\t"
+					+ "FailedConnAttempts\t"
+					+ "ConnResetsReceived\t"
+					+ "ConnEstablished\t"
+					+ "PcktsReceived\t"
+					+ "PcktsSent\t"
+					+ "PcktsRetransmited\t"
+					+ "BadPcktsReceived\t"
+					+ "PcktsResetSent";
+	}
 }

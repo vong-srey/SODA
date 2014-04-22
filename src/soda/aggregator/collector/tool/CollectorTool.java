@@ -45,7 +45,19 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 * Which means, please keep the order and the content of this current list
 	 */
 	public static final List<String> AVAILABLE_TOOLS = Arrays.asList(new String[]{"CPUCollector", "DFCollector", "DiskCollector", "MemoryCollector", "NetworkCollector"});
-
+	/**
+	 * used as map's key
+	 */
+	protected final String DEVICE_NAME = "deviceName";
+	/**
+	 * used as map's key
+	 */
+	protected final String DESCRIPTION = "description";
+	/**
+	 * used as map's key
+	 */
+	protected final String VALUE = "value";
+	
 	
 	
 	/**
@@ -71,17 +83,9 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	
 	
 	/**
-	 * 
+	 * used to set up the description header of every log file
 	 */
-	protected final String DEVICE_NAME = "deviceName";
-	/**
-	 * 
-	 */
-	protected final String DESCRIPTION = "description";
-	/**
-	 * 
-	 */
-	protected final String VALUE = "value";
+	protected String logHeader = "";
 	
 	
 	
@@ -89,6 +93,32 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 * a control variable of the collection statu. If this flag set to true, the collection and logging process will be stop and thread will be killed.
 	 */
 	protected AtomicBoolean stopCollection = new AtomicBoolean(false);
+	
+	
+	
+	/**
+	 * getter for logHeader
+	 * @return
+	 */
+	public String getLogHeader(){
+		return logHeader;
+	}
+	
+	
+	/**
+	 * Setup the description header that will be print out once at the top of every log file.
+	 * The setting up depends on the DeviceCollector
+	 */
+	public abstract void setupLogHeader();
+	
+	
+	
+	/**
+	 * setter of stopCollection status
+	 */
+	public void setStopCollection(boolean status){
+		stopCollection.set(status);
+	}
 	
 	
 	
@@ -108,6 +138,9 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 */
 	public void configureLogger() throws SigarException{
 		LoggerBuilder lb = new LoggerBuilder();
+		
+		// setup the header content
+		setupLogHeader();
 		
 		// getPerforamnce, because we want to know how many devices out there (e.g.: for CPU, there can be CPU0, CPU1, ... and Disk there can be dev01, dev02, /tmp, /var ...)
 		// the put those devices name sinto the "devices" list.
@@ -132,7 +165,7 @@ public abstract class CollectorTool extends Thread implements Serializable{
 			devicesNames.add(per.get(DEVICE_NAME));
 		}
 		
-		loggers = lb.getLoggersMapFromDefaultConfigFile(devicesNames);
+		loggers = lb.getLoggersMapFromDefaultConfigFile(devicesNames, getLogHeader());
 	}
 	
 	
@@ -149,8 +182,6 @@ public abstract class CollectorTool extends Thread implements Serializable{
 					
 			strBuilder.setLength(0);
 			strBuilder.append(deviceName);
-			strBuilder.append(" ");
-			strBuilder.append(perf.get(DESCRIPTION));
 			strBuilder.append(" ");
 			strBuilder.append(perf.get(VALUE));
 			
@@ -176,17 +207,15 @@ public abstract class CollectorTool extends Thread implements Serializable{
 				Set<Map<String, String>> performances = getPerformance();
 				recordPerformance(performances);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				// if thread is interrupted
-				appLogger.error("Collector thread has been interrupted", e);
+				appLogger.error(this.getClass() + ": Collector thread has been interrupted", e);
 				break;
 			} catch (SigarException e){
 				// if Sigar library can't access the hardware data.
-				appLogger.error("Sigar Library cannot access the hardware data", e);
+				appLogger.error(this.getClass() + ": Sigar Library cannot access the hardware data", e);
 				break;
 			} catch (NullPointerException e){
-				// the first time to access logger, it might be containing null value
-				appLogger.error("logger who logging the data has not been instantiated", e);
+				appLogger.info(this.getClass() + " has not been set up to log the data");
 				break;
 			}
 			
