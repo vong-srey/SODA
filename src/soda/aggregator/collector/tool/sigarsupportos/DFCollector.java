@@ -89,21 +89,22 @@ public class DFCollector extends CollectorTool{
 		name = name.substring(name.lastIndexOf("/") + 1);
 		
 		performance.put(DEVICE_NAME, "DF-"+name);
-		performance.put(DESCRIPTION, "Size-Byte,Used-Byte,Avail-Byte,UsedInPerc-%");
+		performance.put(DESCRIPTION, "Size-MB,Used-MB,Avail-MB,UsedInPerc-%");
 		
 		strBuilder.setLength(0);
 		
-		strBuilder.append(megaByteToByte(volume.getTotal()));
+		// getTotal() and getFree() and getAvail() are producing MB result
+		strBuilder.append(volume.getTotal());
 		strBuilder.append(" ");
 		
 		long temp = volume.getTotal() - volume.getFree();
-		strBuilder.append(megaByteToByte(temp));
+		strBuilder.append(temp);
 		strBuilder.append(" ");
 		
-		strBuilder.append(megaByteToByte(volume.getAvail()));
+		strBuilder.append(volume.getAvail());
 		strBuilder.append(" ");
 		
-		DecimalFormat d = new DecimalFormat("0.000");
+		DecimalFormat d = new DecimalFormat("0.0");
 		temp = (long)(volume.getUsePercent() * 100);
 		strBuilder.append(d.format(temp));
 		

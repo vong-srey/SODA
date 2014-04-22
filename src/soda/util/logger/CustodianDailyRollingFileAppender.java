@@ -126,7 +126,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 	}
 
 	public void activateOptions() {
-		System.out.println("activateOptions() method");
+//		System.out.println("activateOptions() method");
 		
 		super.activateOptions();
 		if (datePattern != null && fileName != null) {
@@ -146,7 +146,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 	}
 
 	void printPeriodicity(int type) {
-		System.out.println("printPeriodicity() method");
+//		System.out.println("printPeriodicity() method");
 		
 		
 		switch (type) {
@@ -187,7 +187,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 	// GMT (the epoch).
 
 	int computeCheckPeriod() {
-		System.out.println("computeCheckPeriod() method");
+//		System.out.println("computeCheckPeriod() method");
 		
 		
 		
@@ -218,7 +218,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 	 * Rollover the current file to a new file.
 	 */
 	void rollOver() throws IOException {
-		System.out.println("rollOver() method");
+//		System.out.println("rollOver() method");
 		
 		/* Compute filename, but only if datePattern is specified */
 		if (datePattern == null) {
@@ -275,7 +275,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 		
 		long n = System.currentTimeMillis();
 		
-		System.out.println("subAppend() n= " + n + "   nextCheck=" + nextCheck);
+//		System.out.println("subAppend() n= " + n + "   nextCheck=" + nextCheck);
 		
 		if (n >= nextCheck) {
 			now.setTime(n);
@@ -312,7 +312,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 	 * required.
 	 */
 	protected void cleanupAndRollOver() throws IOException {
-		System.out.println("cleanupAndRollOver() method");
+//		System.out.println("cleanupAndRollOver() method");
 		
 		// Check to see if there are already 5 files
 		File file = new File(fileName);
@@ -320,6 +320,8 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 		int maxDays = 7;
 		try {
 			maxDays = Integer.parseInt(getMaxNumberOfDays());
+			// if user give some crapy maxDays (zero or negative) stay stick with 7 days
+			if(maxDays <= 0) maxDays = 7;
 		} catch (Exception e) {
 			// just leave it at 7.
 		}
@@ -331,30 +333,30 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 					new StartsWithFileFilter(file.getName(), false));
 			int nameLength = file.getName().length();
 			for (int i = 0; i < files.length; i++) {
-				System.out.println("Filename: " + files[i].getName());
+//				System.out.println("Filename: " + files[i].getName());
 				if(files[i].getName().endsWith(".zip")) continue;
 				
 				String datePart = null;
 				try {
 					datePart = files[i].getName().substring(nameLength);
 
-					System.out.println("datePart: " + datePart);
+//					System.out.println("datePart: " + datePart);
 					
 					Date date = sdf.parse(datePart);
 					
 					
 					
 					
-					System.out.println("cutoffDate: " + cutoffDate.toString() + ". file's date: " + date.toString());
-					System.out.println("date.before(cutoffDate) = " + date.before(cutoffDate));
+//					System.out.println("cutoffDate: " + cutoffDate.toString() + ". file's date: " + date.toString());
+//					System.out.println("date.before(cutoffDate) = " + date.before(cutoffDate));
 					
 					
 					if (date.before(cutoffDate)) {
 						
 						
-						System.out.println("getCompressBackups().equalsIgnoreCase(YES) +" + getCompressBackups().equalsIgnoreCase("YES"));
-						System.out.println("getCompressBackups().equalsIgnoreCase(TRUE)" + getCompressBackups().equalsIgnoreCase("TRUE"));
-						System.out.println("getCompressBackups().equalsIgnoreCase(YES) || getCompressBackups().equalsIgnoreCase(TRUE)" + (getCompressBackups().equalsIgnoreCase("YES")|| getCompressBackups().equalsIgnoreCase("TRUE")));
+//						System.out.println("getCompressBackups().equalsIgnoreCase(YES) +" + getCompressBackups().equalsIgnoreCase("YES"));
+//						System.out.println("getCompressBackups().equalsIgnoreCase(TRUE)" + getCompressBackups().equalsIgnoreCase("TRUE"));
+//						System.out.println("getCompressBackups().equalsIgnoreCase(YES) || getCompressBackups().equalsIgnoreCase(TRUE)" + (getCompressBackups().equalsIgnoreCase("YES")|| getCompressBackups().equalsIgnoreCase("TRUE")));
 
 						
 						// If we're supposed to zip files and this isn't already a zip
@@ -363,19 +365,19 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 
 							
 							
-							System.out.println("here before zipAndDelete(files[i])");
+//							System.out.println("here before zipAndDelete(files[i])");
 							
 							
 							zipAndDelete(files[i]);
 						//} else {						
 						}
 						
-						System.out.println("here before files[i].delete() " + files[i].getName());
+//						System.out.println("here before files[i].delete() " + files[i].getName());
 						files[i].delete();
 					}
 					
 				} catch (ParseException e) {
-					System.out.println("Exception: cannot parse datePart");
+//					System.out.println("Exception: cannot parse datePart");
 					
 				} catch (Exception pe) {
 					// This isn't a file we should touch (it isn't named
@@ -397,7 +399,7 @@ public class CustodianDailyRollingFileAppender extends FileAppender {
 	private void zipAndDelete(File file) throws IOException {
 		
 		
-		System.out.println("zipAndDelete() method start here");
+//		System.out.println("zipAndDelete() method start here");
 		
 		
 		if (!file.getName().endsWith(".zip")) {

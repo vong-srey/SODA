@@ -66,14 +66,15 @@ public class DiskCollector extends CollectorTool{
 		name = name.substring(name.lastIndexOf("/") + 1);
 		
 		performance.put(DEVICE_NAME, "Disk-" + name);
-		performance.put(DESCRIPTION, "R_In-Byte,W_Out-Byte,Data_R,Data_W");
+		performance.put(DESCRIPTION, "R_In-MB,W_Out-MB,Data_R-MB,Data_W-MB");
 		
 		strBuilder.setLength(0);
 		
-		strBuilder.append(volume.getDiskReads());
+		// getDiskReads() and write producing Byte result
+		strBuilder.append(volume.getDiskReads()/1024);
 		strBuilder.append(" ");
 		
-		strBuilder.append(volume.getDiskWrites());
+		strBuilder.append(volume.getDiskWrites()/1024);
 		strBuilder.append(" ");
 		
 		// if this getDiskReadBytes is not implemented for this volume (fs), then add "-"
@@ -83,7 +84,9 @@ public class DiskCollector extends CollectorTool{
 			strBuilder.append("-");
 		} else {
 	        // just use Sigar.formatSize(long size) if we want to format GB or MB automatically
-			strBuilder.append(temp);
+			
+			// getDiskReadBytes() producing Byte result. we need MB
+			strBuilder.append(temp/1024);
 		}
 		strBuilder.append(" ");
 		
@@ -93,7 +96,8 @@ public class DiskCollector extends CollectorTool{
 		if (temp == Sigar.FIELD_NOTIMPL) {
 			strBuilder.append("-");
 		} else {
-			strBuilder.append(temp);
+			// getDiskWriteBytes() producing Byte result. we need MB
+			strBuilder.append(temp/1024);
 		}
 		
 		performance.put(this.VALUE, strBuilder.toString());

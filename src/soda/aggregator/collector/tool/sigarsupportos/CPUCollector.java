@@ -56,7 +56,7 @@ public class CPUCollector extends CollectorTool{
 		performance.put(DEVICE_NAME, coreIndex);
 		performance.put(DESCRIPTION, "User-%,Sys-%,Idle-%,Wait-%,Nice-%,IRQ-%");
 		
-		DecimalFormat d = new DecimalFormat("0.000");
+		DecimalFormat d = new DecimalFormat("0.0");
 		
 		strBuilder.setLength(0);
 		strBuilder.append(d.format(cpu.getUser() * 100));

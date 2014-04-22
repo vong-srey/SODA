@@ -64,25 +64,27 @@ public class MemoryCollector extends CollectorTool{
         Map<String, String> map = new LinkedHashMap<String, String>();
         
         map.put(this.DEVICE_NAME, "Memory-Swap");
-        map.put(this.DESCRIPTION, "Total-Byte,Used-Byte,Free-Byte,Swap_Total-Byte,Swap_Used-Byte,Swap_Free-Byte");
+        map.put(this.DESCRIPTION, "Total-MB,Used-MB,Free-MB,Swap_Total-MB,Swap_Used-MB,Swap_Free-MB");
         
         strBuilder.setLength(0);
         
         // add memory Total, Used, Free
         // just use Sigar.formatSize(long size) if we want to format GB or MB automatically
-        strBuilder.append(mem.getTotal());
+        
+        // getTotal(), geUsed(), getFree() are producing Byte result. but, we want MB result
+        strBuilder.append(mem.getTotal()/1024);
         strBuilder.append(" ");
-        strBuilder.append(mem.getUsed());
+        strBuilder.append(mem.getUsed()/1024);
         strBuilder.append(" ");
-        strBuilder.append(mem.getFree());
+        strBuilder.append(mem.getFree()/1024);
         strBuilder.append(" ");
         
         // Swap
-        strBuilder.append(swap.getTotal());
+        strBuilder.append(swap.getTotal()/1024);
         strBuilder.append(" ");
-        strBuilder.append(swap.getUsed());
+        strBuilder.append(swap.getUsed()/1024);
         strBuilder.append(" ");
-        strBuilder.append(swap.getFree());
+        strBuilder.append(swap.getFree()/1024);
         
         map.put(this.VALUE, strBuilder.toString());
         strBuilder.setLength(0);
