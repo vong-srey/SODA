@@ -2,11 +2,30 @@ package soda.util.logger;
 
 import org.apache.log4j.PatternLayout;
 
+
+/**
+ * This class defining the PatternLayout of the Log4j.
+ * Additional feature (over PatternLayout) is to print header on the top of every log.
+ * The header can be defined using setHeader(String header)
+ * 
+ * @author vongvithyeasrey
+ *
+ */
 public class SodaPatternLayout extends PatternLayout{
 	
 	// used to set and get the header
 	// header will be printed out only once every log file
 	private String header = "";
+	
+	
+	
+	/**
+	 * Constructor
+	 */
+	public SodaPatternLayout(){
+		super();
+		setHeader("");
+	}
 	
 	
 	

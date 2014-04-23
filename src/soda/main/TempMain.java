@@ -44,36 +44,5 @@ public class TempMain{
 		// 3). Instantiate aggregator and start collecting and logging machine performance.
 		Aggregator aggregator = new Aggregator();
 		aggregator.runAggregation();
-		
-		
-//		CollectorFactory cf = CollectorFactoryManager.getCollectorFactory();
-//		CollectorTool df = cf.getDFCollector();
-//		df.start();
-//		
-//		CollectorTool ddf = cf.getDiskCollector();
-//		ddf.start();
-//		
 	}
-	
-	
-	// how to config a logger
-	// need to remove when complete the logging tasks
-	public static void logger(){
-		CustodianDailyRollingFileAppender a = new CustodianDailyRollingFileAppender();
-        a.setName("TESTLOG");
-        a.setFile("/home/adminuser/Desktop/testlog/mylog.log");
-        a.setAppend(true);
-        a.setImmediateFlush(true);
-        a.setMaxNumberOfDays("2");
-        a.setCompressBackups("true");
-        a.setDatePattern("'.'yyyy-MM-dd");
-        String pattern = "%d{dd MMM yyyy HH:mm:ss,SSS} %m%n";
-        PatternLayout ly = new PatternLayout();
-        ly.setConversionPattern(pattern);
-        a.setLayout(ly);
-        a.activateOptions();
-        Logger.getRootLogger().addAppender(a);
-	}
-
-	
 }

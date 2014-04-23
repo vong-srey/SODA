@@ -55,25 +55,23 @@ public class CPUCollector extends CollectorTool{
 		
 		performance.put(DEVICE_NAME, coreIndex);
 		
-		DecimalFormat d = new DecimalFormat("0.0");
-		
 		/* ***********************************************************************************
 		 * Appending the log data into the strBuilder.
 		 * If you are modifying the order or log data, you also need to modify the logHeader
 		 * in setupLogHeader() method 
 		 * ***********************************************************************************/
 		strBuilder.setLength(0);
-		strBuilder.append(d.format(cpu.getUser() * 100));
+		strBuilder.append(getOneDecPerc(cpu.getUser()));
 		strBuilder.append(" ");
-		strBuilder.append(d.format(cpu.getSys() * 100));
+		strBuilder.append(getOneDecPerc(cpu.getSys()));
 		strBuilder.append(" ");
-		strBuilder.append(d.format(cpu.getIdle() * 100));
+		strBuilder.append(getOneDecPerc(cpu.getIdle()));
 		strBuilder.append(" ");
-		strBuilder.append(d.format(cpu.getWait() * 100));
+		strBuilder.append(getOneDecPerc(cpu.getWait()));
 		strBuilder.append(" ");
-		strBuilder.append(d.format(cpu.getNice() * 100));
+		strBuilder.append(getOneDecPerc(cpu.getNice()));
 		strBuilder.append(" ");
-		strBuilder.append(d.format(cpu.getUser() * 100));
+		strBuilder.append(getOneDecPerc(cpu.getUser()));
 		
 		performance.put(VALUE, strBuilder.toString());
 		strBuilder.setLength(0);
@@ -90,7 +88,6 @@ public class CPUCollector extends CollectorTool{
 	 */
 	@Override
 	public Set<Map<String, String>> getPerformance() throws SigarException {
-		Sigar sigar = new Sigar();
 		
 		// represent the whole core CPU
 		CpuPerc cpuTotal = sigar.getCpuPerc();

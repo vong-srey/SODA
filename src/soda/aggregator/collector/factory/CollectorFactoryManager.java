@@ -54,10 +54,13 @@ public class CollectorFactoryManager {
 		// then invoke each public "get*Collector()" method to get every available Collector and add it to the collectorsList
 		Class<CollectorFactory> c = (Class<CollectorFactory>) cf.getClass();
 		Method[] allMethods = c.getDeclaredMethods();
+		
+		// iterate through each method
 		for(Method method : allMethods){
 			String methodName = method.getName();
 			Class returnType = method.getReturnType().getSuperclass();
 			
+			// void and primitive have SuperClass (Type) null. we're intereted only those that has super type as CollectorTool
 			if(returnType != null){
 				String returnTypeSuperClassName = method.getReturnType().getSuperclass().toString();
 				
@@ -66,7 +69,11 @@ public class CollectorFactoryManager {
 						&& returnTypeSuperClassName.equals(COLLECTORTOOL_CLASS_FULLNAME) ){
 					
 					try {
-						collectorsList.add((CollectorTool) method.invoke(cf));
+						// invoke the method, and get the DeviceCollector (DeviceCollector is inherited from CollectorTool
+						Object obj = method.invoke(cf);
+						if(obj instanceof CollectorTool){
+							collectorsList.add((CollectorTool) obj);
+						}
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 						appLogger.error("method " + method + " cannot be invoked using reflection.", e);
 						throw e;

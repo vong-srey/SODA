@@ -291,9 +291,14 @@ public class LoggerBuilder {
 			return false;
 		}
 		
+		// set appender (our customized appender)
 		CustodianDailyRollingFileAppender temp = new CustodianDailyRollingFileAppender();
 		temp.setName(appLoggerName);
-		temp.setFile(ConfigReader.getProperty(appLoggerName + "LogFolder") + "app.log");
+		String folder = ConfigReader.getProperty(appLoggerName + "LogFolder");
+		if(!folder.endsWith("/")){ 
+			folder = folder + "/";
+		}
+		temp.setFile(folder + "app.log");
 		String immediateFlush = ConfigReader.getProperty(appLoggerName + "LogImmediateFlush");
 		temp.setImmediateFlush(immediateFlush.equalsIgnoreCase("true"));
 		String append = ConfigReader.getProperty(appLoggerName + "LogAppend");
@@ -302,10 +307,12 @@ public class LoggerBuilder {
 		temp.setCompressBackups(appLoggerName + "LogCompressBackups");
 		String threshold = ConfigReader.getProperty(appLoggerName + "LogThreshold");
 		temp.setThreshold(Level.toPriority(threshold));
-		PatternLayout ly = new PatternLayout();
+		// set layout (our customized PatternLayout)
+		SodaPatternLayout ly = new SodaPatternLayout("");
 		ly.setConversionPattern(ConfigReader.getProperty(appLoggerName + "LogPattern"));
 		temp.setLayout(ly);
 		temp.activateOptions();
+		// set up logger
 		appLogger.addAppender(temp);
 		
 		return true;
@@ -385,14 +392,17 @@ public class LoggerBuilder {
 		if(!folder.endsWith("/")){ 
 			folder = folder + "/";
 		}
-		
 		boolean immediateFlush = ConfigReader.getProperty(deviceCollector + "LogImmediateFlush").equalsIgnoreCase("true");
 		boolean isAppend = ConfigReader.getProperty(deviceCollector + "LogAppend").equalsIgnoreCase("true");
 		String maxNumberOfDays = ConfigReader.getProperty(deviceCollector + "LogMaxNumberOfDays");
 		String compressBackup = ConfigReader.getProperty(deviceCollector + "LogCompressBackups");
 		String layoutPattern = ConfigReader.getProperty(deviceCollector + "LogPattern");
 		
+		
+		// Iterate through each deviceName and set up a logger/appender/layout for each device
+		// then put each logger into the loggers map (each device has its own logger, which is different from other loggers)
 		for(String deviceName : devicesNames){
+			// set appender (our customized appender)
 			CustodianDailyRollingFileAppender appTemp = new CustodianDailyRollingFileAppender();
 			appTemp.setName(deviceName);
 			appTemp.setFile( folder + deviceName + ".log");
@@ -400,10 +410,12 @@ public class LoggerBuilder {
 			appTemp.setAppend(isAppend);
 			appTemp.setMaxNumberOfDays(maxNumberOfDays);
 			appTemp.setCompressBackups(compressBackup);
+			// set layout (our customized PatternLayout)
 			SodaPatternLayout ly = new SodaPatternLayout(header);
 			ly.setConversionPattern(layoutPattern);
 			appTemp.setLayout(ly);
 			appTemp.activateOptions();
+			// set up logger
 			Logger logTemp = Logger.getLogger(deviceName);
 			logTemp.addAppender(appTemp);
 			loggers.put(deviceName, logTemp);

@@ -1,6 +1,7 @@
 package soda.aggregator.collector.tool;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
+import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
 import soda.aggregator.collector.tool.sigarsupportos.CPUCollector;
@@ -16,6 +18,7 @@ import soda.aggregator.collector.tool.sigarsupportos.DFCollector;
 import soda.aggregator.collector.tool.sigarsupportos.DiskCollector;
 import soda.aggregator.collector.tool.sigarsupportos.MemoryCollector;
 import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
+import soda.aggregator.collector.tool.sigarsupportos.ProcsCollector;
 import soda.util.config.ConfigKeysValues;
 import soda.util.config.ConfigReader;
 import soda.util.logger.LoggerBuilder;
@@ -44,17 +47,17 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 * If you are going to add new Collector into this application, please add that Collector at the end of this list.
 	 * Which means, please keep the order and the content of this current list
 	 */
-	public static final List<String> AVAILABLE_TOOLS = Arrays.asList(new String[]{"CPUCollector", "DFCollector", "DiskCollector", "MemoryCollector", "NetworkCollector"});
+	public static final List<String> AVAILABLE_TOOLS = Arrays.asList(new String[]{"CPUCollector", "DFCollector", "DiskCollector", "MemoryCollector", "NetworkCollector", "ProcsCollector"});
 	/**
-	 * used as map's key
+	 * used as a map's key
 	 */
 	protected final String DEVICE_NAME = "deviceName";
 	/**
-	 * used as map's key
+	 * used as a map's key
 	 */
 	protected final String DESCRIPTION = "description";
 	/**
-	 * used as map's key
+	 * used as a map's key
 	 */
 	protected final String VALUE = "value";
 	
@@ -93,6 +96,13 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 * a control variable of the collection statu. If this flag set to true, the collection and logging process will be stop and thread will be killed.
 	 */
 	protected AtomicBoolean stopCollection = new AtomicBoolean(false);
+	
+	
+	
+	/**
+	 * Sigar object that help to get all the hardware and OS performances
+	 */
+	protected Sigar sigar = new Sigar();
 	
 	
 	
@@ -143,7 +153,7 @@ public abstract class CollectorTool extends Thread implements Serializable{
 		setupLogHeader();
 		
 		// getPerforamnce, because we want to know how many devices out there (e.g.: for CPU, there can be CPU0, CPU1, ... and Disk there can be dev01, dev02, /tmp, /var ...)
-		// the put those devices name sinto the "devices" list.
+		// then put those devices names into the "devices" list.
 		// because we need to create a Logger for each device
 		Set<Map<String, String>> performances = getPerformance();
 		List<String> devicesNames = new ArrayList<String>();
@@ -159,6 +169,8 @@ public abstract class CollectorTool extends Thread implements Serializable{
 			devicesNames.add(AVAILABLE_TOOLS.get(3));
 		} else if(obj instanceof NetworkCollector){
 			devicesNames.add(AVAILABLE_TOOLS.get(4));
+		} else if(obj instanceof ProcsCollector){
+			devicesNames.add(AVAILABLE_TOOLS.get(5));
 		}
 		
 		for(Map<String, String> per : performances){
@@ -220,5 +232,69 @@ public abstract class CollectorTool extends Thread implements Serializable{
 			}
 			
 		}
+	}
+	
+	
+	
+
+	
+	
+	/**
+	 * a helper method to convert the size in MB (in long) to Byte 
+	 * @param size in MB
+	 * @return String of size in Byte
+	 */
+	public String megaByteToByte(long size){
+		if(size < 0) return "0";
+
+		//return Sigar.formatSize(size * 1024);  (Sigar.formatSize(sizeInByte) will return according the the value, MB, GB or TB)
+		
+		return String.valueOf(size * 1024);
+	}
+	
+	
+	
+
+	
+	
+	/**
+	 * a helper method to convert the size in Byte (in long) to MB 
+	 * @param size in Byte
+	 * @return String of size in MB
+	 */
+	public String byteToMegaByte(long size){
+		if(size < 0) return "0";
+
+		//return Sigar.formatSize(size * 1024);  (Sigar.formatSize(sizeInByte) will return according the the value, MB, GB or TB)
+		
+		return String.valueOf(size / 1024);
+	}
+	
+	
+	
+	/**
+	 * a helper method to convert the percentage in the form of 0.*********** into **.*
+	 * @param perc
+	 * @return
+	 */
+	public String getOneDecPerc(double perc){
+		if(perc < 0) return "0.0";
+		
+		DecimalFormat d = new DecimalFormat("0.0");
+		
+		return d.format(perc * 100);
+	}
+	
+	
+	
+	/**
+	 * a helper to format numb to String
+	 * @param numb
+	 * @return "0" if the num <0, else return that number in String
+	 */
+	public String formatNumb(long numb){
+		if(numb < 0) return "0";
+		
+		return String.valueOf(numb);
 	}
 }

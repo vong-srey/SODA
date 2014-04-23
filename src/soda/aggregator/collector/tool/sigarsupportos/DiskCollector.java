@@ -53,8 +53,6 @@ public class DiskCollector extends CollectorTool{
 	 * @return a map (LinkedHashMap) of "Performance Description" (as a key) and "Performance Value" for the given volume (fs)
 	 */
 	public Map<String, String> getPerformanceOfGivenVolume(FileSystem fs) throws SigarException {
-		Sigar sigar = new Sigar();
-
 		Map<String, String> performance = new LinkedHashMap<String, String>();
 		
         FileSystemUsage volume = sigar.getFileSystemUsage(fs.getDirName());
@@ -75,10 +73,10 @@ public class DiskCollector extends CollectorTool{
 		strBuilder.setLength(0);
 		
 		// getDiskReads() and write producing Byte result
-		strBuilder.append(volume.getDiskReads()/1024);
+		strBuilder.append(byteToMegaByte(volume.getDiskReads()));
 		strBuilder.append(" ");
 		
-		strBuilder.append(volume.getDiskWrites()/1024);
+		strBuilder.append(byteToMegaByte(volume.getDiskWrites()));
 		strBuilder.append(" ");
 		
 		// if this getDiskReadBytes is not implemented for this volume (fs), then add "-"
@@ -90,7 +88,7 @@ public class DiskCollector extends CollectorTool{
 	        // just use Sigar.formatSize(long size) if we want to format GB or MB automatically
 			
 			// getDiskReadBytes() producing Byte result. we need MB
-			strBuilder.append(temp/1024);
+			strBuilder.append(byteToMegaByte(temp));
 		}
 		strBuilder.append(" ");
 		
@@ -101,7 +99,7 @@ public class DiskCollector extends CollectorTool{
 			strBuilder.append("-");
 		} else {
 			// getDiskWriteBytes() producing Byte result. we need MB
-			strBuilder.append(temp/1024);
+			strBuilder.append(byteToMegaByte(temp));
 		}
 		
 		performance.put(this.VALUE, strBuilder.toString());
@@ -120,7 +118,6 @@ public class DiskCollector extends CollectorTool{
 	 */
 	@Override
 	public Set<Map<String, String>> getPerformance() throws SigarException{
-		Sigar sigar = new Sigar();
 		Set<Map<String,String>> perfSet = new LinkedHashSet<Map<String, String>>();
 		
 		FileSystem[] fslist = sigar.getFileSystemList();

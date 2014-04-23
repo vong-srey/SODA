@@ -43,18 +43,6 @@ public class DFCollector extends CollectorTool{
 		configureLogger();
 		LoggerBuilder.getAppLogger().info("DFCollector is instantiated successfully");
 	}
-
-	
-	
-	/**
-	 * a helper method to convert the size in MB (in long) to GB 
-	 * @param size in MB
-	 * @return String of size in Byte
-	 */
-	public static long megaByteToByte(long size){
-		//return Sigar.formatSize(size * 1024);  (Sigar.formatSize(sizeInByte) will return according the the value, MB, GB or TB)
-		return size * 1024;
-	}
 	
 	
 	
@@ -64,8 +52,6 @@ public class DFCollector extends CollectorTool{
 	 * @return a map (LinkedHashMap) of "Performance Description" (as a key) and "Performance Value" for the given volume (fs)
 	 */
 	public Map<String, String> getPerformanceOfGivenVolume(FileSystem fs) throws SigarException {
-		
-		Sigar sigar = new Sigar();
 
 		Map<String, String> performance = new LinkedHashMap<String, String>();
 		
@@ -108,9 +94,7 @@ public class DFCollector extends CollectorTool{
 		strBuilder.append(volume.getAvail());
 		strBuilder.append(" ");
 		
-		DecimalFormat d = new DecimalFormat("0.0");
-		temp = (long)(volume.getUsePercent() * 100);
-		strBuilder.append(d.format(temp));
+		strBuilder.append(getOneDecPerc(volume.getUsePercent() ));
 		
 		performance.put(VALUE, strBuilder.toString());
 		
@@ -128,7 +112,6 @@ public class DFCollector extends CollectorTool{
 	 */
 	@Override
 	public Set<Map<String, String>> getPerformance() throws SigarException{
-		Sigar sigar = new Sigar();
 		Set<Map<String,String>> perfSet = new LinkedHashSet<Map<String, String>>();
 		
 		FileSystem[] fslist = sigar.getFileSystemList();

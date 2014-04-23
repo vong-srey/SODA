@@ -7,6 +7,7 @@ import soda.aggregator.collector.tool.sigarsupportos.DFCollector;
 import soda.aggregator.collector.tool.sigarsupportos.DiskCollector;
 import soda.aggregator.collector.tool.sigarsupportos.MemoryCollector;
 import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
+import soda.aggregator.collector.tool.sigarsupportos.ProcsCollector;
 
 /**
  * Collector Factory for OS(es) that are supported by Sigar. It will create all
@@ -79,6 +80,19 @@ public class SigarSupportCollectorFactory implements CollectorFactory{
 	public NetworkCollector getNetworkCollector() throws SigarException {
 		// TODO Auto-generated method stub
 		return new NetworkCollector();
+	}
+
+
+
+	/**
+	 * producing the Processes collector and logger for this OS (the processes' owner, CPU usage, memory usage, threads and its status)
+	 * @return collector and logger of Processes performance for the specified PID (in config file) for this OS
+	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
+	 */
+	@Override
+	public ProcsCollector getProcsCollector() throws SigarException {
+		// TODO Auto-generated method stub
+		return new ProcsCollector();
 	}
 
 }

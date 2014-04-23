@@ -54,7 +54,6 @@ public class MemoryCollector extends CollectorTool{
 	public Set<Map<String, String>> getPerformance() throws SigarException {
 		Set<Map<String, String>> perfSet = new LinkedHashSet<Map<String, String>>();
 		
-		Sigar sigar = new Sigar();
 		Mem mem   = sigar.getMem();
         Swap swap = sigar.getSwap();
         
@@ -74,19 +73,19 @@ public class MemoryCollector extends CollectorTool{
         // just use Sigar.formatSize(long size) if we want to format GB or MB automatically
         
         // getTotal(), geUsed(), getFree() are producing Byte result. but, we want MB result
-        strBuilder.append(mem.getTotal()/1024);
+        strBuilder.append(byteToMegaByte(mem.getTotal()));
         strBuilder.append(" ");
-        strBuilder.append(mem.getUsed()/1024);
+        strBuilder.append(byteToMegaByte(mem.getUsed()));
         strBuilder.append(" ");
-        strBuilder.append(mem.getFree()/1024);
+        strBuilder.append(byteToMegaByte(mem.getFree()));
         strBuilder.append(" ");
         
         // Swap
-        strBuilder.append(swap.getTotal()/1024);
+        strBuilder.append(byteToMegaByte(swap.getTotal()));
         strBuilder.append(" ");
-        strBuilder.append(swap.getUsed()/1024);
+        strBuilder.append(byteToMegaByte(swap.getUsed()));
         strBuilder.append(" ");
-        strBuilder.append(swap.getFree()/1024);
+        strBuilder.append(byteToMegaByte(swap.getFree()));
         
         map.put(this.VALUE, strBuilder.toString());
         strBuilder.setLength(0);

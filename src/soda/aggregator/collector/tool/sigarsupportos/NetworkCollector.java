@@ -52,7 +52,6 @@ public class NetworkCollector extends CollectorTool{
 		Set<Map<String, String>> perfSet = new LinkedHashSet<Map<String, String>>();
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		
-		Sigar sigar = new Sigar();
 		Tcp stat = sigar.getTcp();
 		
 		map.put(this.DEVICE_NAME, "Network-TCP");
@@ -64,25 +63,25 @@ public class NetworkCollector extends CollectorTool{
 		 * ***********************************************************************************/
 		strBuilder.setLength(0);
 		
-		strBuilder.append(stat.getActiveOpens());			// active connection openings
+		strBuilder.append(formatNumb(stat.getActiveOpens()));			// active connection openings
 		strBuilder.append(" ");
-		strBuilder.append(stat.getPassiveOpens());			// passive connection openings
+		strBuilder.append(formatNumb(stat.getPassiveOpens()));			// passive connection openings
 		strBuilder.append(" ");
-		strBuilder.append(stat.getAttemptFails());			// failed connection attempts
+		strBuilder.append(formatNumb(stat.getAttemptFails()));			// failed connection attempts
 		strBuilder.append(" ");
-		strBuilder.append(stat.getEstabResets());			// connections resets received
+		strBuilder.append(formatNumb(stat.getEstabResets()));			// connections resets received
 		strBuilder.append(" ");
-		strBuilder.append(stat.getCurrEstab());				// connections established
+		strBuilder.append(formatNumb(stat.getCurrEstab()));				// connections established
 		strBuilder.append(" ");
-		strBuilder.append(stat.getInSegs());				// packets received
+		strBuilder.append(formatNumb(stat.getInSegs()));				// packets received
 		strBuilder.append(" ");
-		strBuilder.append(stat.getOutSegs());				// packets set out
+		strBuilder.append(formatNumb(stat.getOutSegs()));				// packets set out
 		strBuilder.append(" ");
-		strBuilder.append(stat.getRetransSegs());			// packets retransmitted
+		strBuilder.append(formatNumb(stat.getRetransSegs()));			// packets retransmitted
 		strBuilder.append(" ");
-		strBuilder.append(stat.getInErrs());				// bad packets received
+		strBuilder.append(formatNumb(stat.getInErrs()));				// bad packets received
 		strBuilder.append(" ");
-		strBuilder.append(stat.getOutRsts());				// packets resets Sent
+		strBuilder.append(formatNumb(stat.getOutRsts()));				// packets resets Sent
 		
 		map.put(VALUE, strBuilder.toString());
 		perfSet.add(map);
@@ -103,7 +102,7 @@ public class NetworkCollector extends CollectorTool{
 		logHeader = "LogTimeStamp\t"
 					+ "DeviceName\t"
 					+ "ActiveConnOpen\t"
-					+ "PassieConnOpen\t"
+					+ "PassivConnOpen\t"
 					+ "FailedConnAttempts\t"
 					+ "ConnResetsReceived\t"
 					+ "ConnEstablished\t"
