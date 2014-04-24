@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -43,6 +44,7 @@ import soda.util.logger.LoggerBuilder;
 public class ProcsCollector extends CollectorTool{
 
 	protected List<String> pids;
+	protected Map<String, String> pidsNames;
 	
 	/**
 	 * configure the logger during this object instantiation
@@ -67,7 +69,7 @@ public class ProcsCollector extends CollectorTool{
 	public Map<String, String> getPerformanceOfGivenPID(String pid){
 		Map<String, String> performance = new LinkedHashMap<String, String>();
 		
-		performance.put(DEVICE_NAME, pid);
+		performance.put(DEVICE_NAME, pidsNames.get(pid));
 		
 		DecimalFormat d = new DecimalFormat("0.0");
 		
@@ -132,20 +134,22 @@ public class ProcsCollector extends CollectorTool{
 			strBuilder.append(formatNumb(procMem.getMajorFaults()));								// number of i/o page faults
 			strBuilder.append(" ");
 			strBuilder.append(formatNumb(procMem.getPageFaults()));									// number of tottal page faults
-			strBuilder.append(" ");
 		} catch (SigarException e){
 			// if getProcMem(pid) throws exception, means it cannot retrieve data => log as unknown ???
-			strBuilder.append("??? ??? ??? ??? ??? ??? ");
+			strBuilder.append("??? ??? ??? ??? ??? ???");
 		}
 		
-		try {
-			strBuilder.append(ProcUtil.getDescription(sigar, Long.parseLong(pid)));		// process description
-		} catch (NumberFormatException e) {
-			// this case would not be possible to happen 
-			// if it can't be parse to long, means it's nt a valid pid => it has been removed since setupPIDsListFromDefaultConfigFile() 
-		} catch (SigarException e) {
-			strBuilder.append("???");
-		}		
+		// cannot decide whether should log the process description or not. 
+		// so, I just uncomment these lines and decide later.
+		// If uncomment these lines, you also need to uncomment a line in setupLogHeader() method
+//		try {
+//			strBuilder.append(ProcUtil.getDescription(sigar, Long.parseLong(pid)));		// process description
+//		} catch (NumberFormatException e) {
+//			// this case would not be possible to happen 
+//			// if it can't be parse to long, means it's nt a valid pid => it has been removed since setupPIDsListFromDefaultConfigFile() 
+//		} catch (SigarException e) {
+//			strBuilder.append("???");
+//		}		
 		
 		
 		performance.put(VALUE, strBuilder.toString());
@@ -220,7 +224,7 @@ public class ProcsCollector extends CollectorTool{
 					+ "NonIOpgFaults\t" 
 					+ "IOpgFaults\t" 
 					+ "TotalPgFaults\t"
-					+ "Description\t"
+//					+ "Description\t"
 					+ "\t??? means unknown or unimplemented value";
 	}
 	
@@ -230,6 +234,7 @@ public class ProcsCollector extends CollectorTool{
 		// if you changed the property in the config file, please double check the key "ProcsCollectorPIDsList"
 		String pidsString = ConfigReader.getProperty("ProcsCollectorPIDsList");
 		pids = new ArrayList<String>(Arrays.asList(pidsString.split(",")));
+		pidsNames = new HashMap<String, String>();
 		
 		List<String> invalidPids = new ArrayList<String>();
 		
@@ -242,6 +247,11 @@ public class ProcsCollector extends CollectorTool{
 				sigar.getProcMem(pid);
 				sigar.getProcState(pid);
 				sigar.getProcCredName(pid);
+				
+				String description = ProcUtil.getDescription(sigar, Long.parseLong(pid));		// process description
+				description = description.substring(description.lastIndexOf("/") + 1);
+				description = description.replaceAll(" ", "");
+				pidsNames.put(pid, description);
 			} catch (SigarException e) {
 				invalidPids.add(pid);
 				LoggerBuilder.getAppLogger().info("ProcsCollector: the pid: " + pid + " is invalid");
