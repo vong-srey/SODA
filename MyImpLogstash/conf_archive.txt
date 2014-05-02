@@ -1,0 +1,85 @@
+# this is logstash configure file. which I keep just for an archive purpose.
+# the learn.conf is the file that i'm working on.
+
+input { stdin { } }
+
+filter {
+
+	grok {
+
+# write the biggest number of data on the top
+
+# Process log pattern
+match => [ "message", "%{SODATIME:logtime} %{DEVICE_NAME:dev} %{USERNAME:UsrName} %{USERNAME:OwnrGrp} %{STARTTIME:start} %{NUMBER:CpuSysTime} %{NUMBER:CpuUsrTime} %{NUMBER:CpuUsg} %{WORD:State} %{NUMBER:NumActiveThreads} %{NUMBER:Priority} %{NUMBER:Nice} %{NUMBER:SharedMem} %{NUMBER:RssMem} %{NUMBER:VirtualMem} %{NUMBER:NonIOpgFaults} %{NUMBER:TotalPgFaults}"]
+
+# network log pattern
+match => [ "message", "%{SODATIME:logtime} %{DEVICE_NAME:dev} %{NUMBER:ActConOpn} %{NUMBER:PssConOpn} %{NUMBER:FailedConAtmpt} %{NUMBER:ConRstRcv} %{NUMBER:ConEstbl} %{NUMBER:PcktsRcv} %{NUMBER:PcktsSent} %{NUMBER:PcktsRetrnsmt} %{NUMBER:BadPcktsRcv} %{NUMBER:PcktsRstSent}"]
+
+# cpu log pattern
+match => [ "message", "%{SODATIME:logtime} %{DEVICE_NAME:dev} %{NUMBER:User} %{NUMBER:Sys} %{NUMBER:Idle} %{NUMBER:Wait} %{NUMBER:Nice} %{NUMBER:Combined} %{NUMBER:IRQ}" ]
+
+#memory  
+match => [ "message", "%{SODATIME:logtime} %{DEVICE_NAME:dev} %{NUMBER:Mem-total} %{NUMBER:Mem-used} %{NUMBER:Mem-free} %{NUMBER:Swap-total} %{NUMBER:Swap-used} %{NUMBER:Swap-free}" ]
+
+# df log pattern      
+match => [ "message", "%{SODATIME:logtime} DF-%{DEVICE_NAME:dev} %{NUMBER:Size} %{NUMBER:Used} %{NUMBER:Avail} %{NUMBER:Used-Perc}" ]
+
+#disk    
+match => [ "message", "%{SODATIME:logtime} Disk-%{DEVICE_NAME:dev} %{NUMBER:R-in} %{NUMBER:W-out} %{NUMBER:Data-r} %{NUMBER:Data-w}" ]
+
+
+tag_on_failure => ["Description header"]
+
+
+
+
+
+
+
+
+
+
+
+#     match => [ "message", "%{DEVICE_NAME:dev} %{DESCRIPTION} %{NUMBER:user}" ]
+
+#    match => [ "message", "%{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes} %{NUMBER:duration} %{POSTFIX_QUEUEID:queryid}" ]
+#    match => [ "message", "%{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes} %{NUMBER:duration}" ]
+    
+#    add_field => {
+# 	"foo_%{method}" => "hello world from %{client}"
+#        "new field" => "example"	
+#    }
+
+	}
+
+
+
+
+
+	date{
+
+match => ["logtime", "dd/MMM/YYYY-HH:mm:ss.SSS", "dd MMM YYYY HH:mm:ss.SSS"]
+
+# logtime has been replaced by logstash's @timestamp instead. so, its safe to remove
+# message has been broken down by regex. so, its a wast to keep it. 
+remove_field => ["logtime", "message", "@version"]
+
+# should we remove the host field?
+
+# set timezone to UTC (+00:00), in order to prevent Grok to offset the given logtime 
+timezone => "UTC"
+
+	}
+
+
+
+
+
+ 
+
+}
+
+output {
+  elasticsearch { host => localhost }
+  stdout { codec => rubydebug }
+}

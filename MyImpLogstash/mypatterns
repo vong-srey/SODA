@@ -1,0 +1,6 @@
+# contents of ./patterns/postfix:
+POSTFIX_QUEUEID [0-9A-F]{10,11}
+DEVICE_NAME %{USERNAME}
+DESCRIPTION [a-zA-Z0-9,\%._-]+
+SODATIME %{MONTHDAY}[\s:./-]%{MONTH}[\s:./-]%{YEAR}[\s:T./-]%{TIME}
+STARTTIME [a-zA-Z0-9\s:./._-]+
