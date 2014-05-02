@@ -71,6 +71,8 @@ public class CPUCollector extends CollectorTool{
 		strBuilder.append(" ");
 		strBuilder.append(getOneDecPerc(cpu.getNice()));
 		strBuilder.append(" ");
+		strBuilder.append(getOneDecPerc(cpu.getCombined()));
+		strBuilder.append(" ");
 		strBuilder.append(getOneDecPerc(cpu.getUser()));
 		
 		performance.put(VALUE, strBuilder.toString());
@@ -122,6 +124,7 @@ public class CPUCollector extends CollectorTool{
 					+ "Idle-%\t"
 					+ "Wait-%\t"
 					+ "Nice-%\t"
+					+ "Combined-%\t"
 					+ "IRQ-%";
 	}
 }

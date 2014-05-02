@@ -63,7 +63,7 @@ public class DiskCollector extends CollectorTool{
 		// else it will start from index + 1 ("/" will not be included)
 		name = name.substring(name.lastIndexOf("/") + 1);
 		
-		performance.put(DEVICE_NAME, "Disk-" + name);
+		performance.put(DEVICE_NAME, "Disk-Vol-" + name);
 		
 		/* ***********************************************************************************
 		 * Appending the log data into the strBuilder.
