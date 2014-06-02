@@ -1,0 +1,21 @@
+# contents of ./patterns/postfix:
+POSTFIX_QUEUEID [0-9A-F]{10,11}
+DEVICE_NAME %{USERNAME}
+DESCRIPTION [a-zA-Z0-9,\%._-]+
+
+SODAMONTH \b(?:(?:(Jan)|(jan))(?:uary)?|(?:(Feb)|(feb))(?:ruary)?|(?:(Mar)|(mar))(?:ch)?|(?:(Apr)|(apr))(?:il)?|(?:(May)|(may))|(?:(Jun)|(jun))(?:e)?|(?:(Jul)|(jul))(?:y)?|(?:(Aug)|(aug))(?:ust)?|(?:(Sep)|(sep))(?:tember)?|(?:(Oct)|(oct))(?:ober)?|(?:(Nov)|(nov))(?:ember)?|(?:(Dec)|(dec))(?:ember)?)\b
+SODATIME (?!<[0-9])%{HOUR}:%{MINUTE}(?::%{SECOND})[\.\,]?(?![0-9])
+SODADATE %{MONTHDAY}[\s\:\.\,\-\/\\]%{SODAMONTH}[\s\:\.\,\-\/\\]%{YEAR}[T\s\:\.\,\-\/\\]%{TIME}
+
+OHP_EVENTTYPE (?:(DATABASE_QUERY)|(INBOUND_MESSAGE)|(OUTBOUND_MESSAGE)|(WEB_SERVICE_REQUEST)|(WEB_SERVICE_CALL)|(WEB_REQUEST)|(SCALAR))
+OHP_DB_REQ_PARAM [a-zA-Z-0-9\!\+\(\)\[\]\.\,\-\_\;\:\~\/\$\'\{\}\=\@\#\%\s]*
+OHP_EVN_PARAM (?:%{URIPATH}|%{OHP_DB_REQ_PARAM})
+
+STARTTIME [a-zA-Z0-9\s:./._-]+
+ANYTHING [.]*
+THREAD_NAME [\S]+
+
+#UAGS : User Agent String. it is used to grab all the chars sets that we don't want to include
+#a-z A-Z 0-9 ! + ( ) . , - ; : [ ] _ ~ whiteSpace /
+UAGS [a-zA-Z0-9\!\+\(\)\.\,\-\;\:\[\]\_\~\s\/]*
+BROWSER_VERSION [a-z0-9\.]+
