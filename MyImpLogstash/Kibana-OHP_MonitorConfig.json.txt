@@ -1,0 +1,1142 @@
+{
+  "title": "OHP Monitor",
+  "services": {
+    "query": {
+      "list": {
+        "0": {
+          "id": 0,
+          "color": "#7EB26D",
+          "alias": "Concerto Home/Login/Logout",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/Concerto.htm\" OR Uri:\"/concerto/Login.htm\" OR Uri:\"/concerto/Logout.htm\""
+        },
+        "1": {
+          "id": 1,
+          "color": "#EAB839",
+          "alias": "Menu Bar",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/MenuBar.htm\""
+        },
+        "2": {
+          "id": 2,
+          "color": "#6ED0E0",
+          "alias": "NewMessage.action",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/NewMessages.action\""
+        },
+        "3": {
+          "id": 3,
+          "color": "#0A50A1",
+          "alias": "Search",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/sqlSearch/SQLSearch.htm\""
+        },
+        "4": {
+          "id": 4,
+          "color": "#E24D42",
+          "alias": "Context.action",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/Context.action\""
+        },
+        "5": {
+          "id": 5,
+          "color": "#1F78C1",
+          "alias": "Application Redirection",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/ApplicationRedirector.htm\""
+        },
+        "6": {
+          "id": 6,
+          "color": "#BA43A9",
+          "alias": "History.action",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/user/History.action\""
+        },
+        "7": {
+          "id": 7,
+          "color": "#705DA0",
+          "alias": "Results and Viewers",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"results/CumulativeLabResults.action\" OR Uri:\"/results/ResultsViewerFrames.htm\""
+        },
+        "8": {
+          "id": 8,
+          "color": "#508642",
+          "alias": "Clinical Doc Viewer",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/cdv/ClinicalDocumentView.action\""
+        },
+        "9": {
+          "id": 9,
+          "color": "#CCA300",
+          "alias": "SQL Connections",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/sqlSearch/SQLFilter.htm\" OR Uri:\"/concerto/sqlSearch/Streaming.pdf\" OR Uri:\"/concerto/sqlSearch/SQLSearch.htm\" OR Uri:\"/concerto/sqlSearch/SQLResults.xml\" OR Uri:\"/concerto/sqlSearch/SQLResults.htm\""
+        },
+        "10": {
+          "id": 10,
+          "color": "#962D82",
+          "alias": "Filter",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/sqlSearch/SQLFilter.htm\""
+        },
+        "11": {
+          "id": 11,
+          "color": "#CCA300",
+          "alias": "Streaming",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/sqlSearch/Streaming.pdf\""
+        },
+        "12": {
+          "id": 12,
+          "color": "#C15C17",
+          "alias": "Results",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "Uri:\"/concerto/sqlSearch/SQLResults.xml\" OR Uri:\"/concerto/sqlSearch/SQLResults.htm\""
+        },
+        "13": {
+          "id": 13,
+          "color": "#0A437C",
+          "alias": "System Usage",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "dev:\"CPUs\" AND type:\"Sys\""
+        },
+        "14": {
+          "id": 14,
+          "color": "#508642",
+          "alias": "User Usage",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "dev:\"CPUs\" AND type:\"User\""
+        },
+        "15": {
+          "id": 15,
+          "color": "#6ED0E0",
+          "alias": "Idle",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "dev:\"CPUs\" AND type:\"Idle\""
+        },
+        "16": {
+          "id": 16,
+          "color": "#447EBC",
+          "alias": "Parallel Scavage",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "type:\"HpUsgAfGC\" AND GCType:\"GC\""
+        },
+        "17": {
+          "id": 17,
+          "color": "#F4D598",
+          "alias": "Old Full GC",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "GCType:\"FullGC\" AND type:\"OldGnHpAfGC\""
+        },
+        "18": {
+          "id": 18,
+          "color": "#6D1F62",
+          "alias": "Other Full GC",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "GCType:\"FullGC\" AND type:\"HpUsgAfGC\""
+        },
+        "19": {
+          "id": 19,
+          "color": "#F9BA8F",
+          "alias": "Memory (MB)",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "type:\"Mem_used\""
+        },
+        "20": {
+          "id": 20,
+          "color": "#F29191",
+          "alias": "Swap (MB)",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "type:\"Swap_used\""
+        },
+        "21": {
+          "id": 21,
+          "color": "#82B5D8",
+          "alias": "Read In (MB/sec)",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "dev:\"Disk_VolGrouplv_root\" AND type:\"R_in\""
+        },
+        "22": {
+          "id": 22,
+          "color": "#CCA300",
+          "alias": "Write Out (MB/sec)",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "dev:\"Disk_VolGrouplv_root\" AND type:\"W_out\""
+        },
+        "23": {
+          "id": 23,
+          "color": "#CCA300",
+          "alias": "Active Connections",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "type:\"ActConOpn\""
+        },
+        "24": {
+          "id": 24,
+          "color": "#1F78C1",
+          "alias": "Passive Connections",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "type:\"PssConOpn\""
+        },
+        "25": {
+          "id": 25,
+          "color": "#E5AC0E",
+          "alias": "Packet Received",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "type:\"PcktsRcv\""
+        },
+        "26": {
+          "id": 26,
+          "color": "#64B0C8",
+          "alias": "Packets Sent",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "type:\"PcktsSent\""
+        },
+        "27": {
+          "id": 27,
+          "color": "#E0752D",
+          "alias": "Available Space (MB)",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "dev:\"Df_VolGrouplv_root \" AND type:\"Avail\""
+        },
+        "28": {
+          "id": 28,
+          "color": "#BF1B00",
+          "alias": "Used Space",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "dev:\"Df_VolGrouplv_root \" AND type:\"Used\""
+        },
+        "29": {
+          "id": 29,
+          "color": "#0A50A1",
+          "alias": "",
+          "pin": false,
+          "type": "lucene",
+          "enable": true,
+          "query": "dev:\"Proc_gpkupdateicon\""
+        }
+      },
+      "ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ]
+    },
+    "filter": {
+      "list": {
+        "0": {
+          "type": "time",
+          "from": "2014-07-05T01:12:14.256Z",
+          "to": "2014-07-05T05:12:14.256Z",
+          "field": "@timestamp",
+          "mandate": "must",
+          "active": true,
+          "alias": "",
+          "id": 0
+        }
+      },
+      "ids": [
+        0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "title": "Requests-Responses Traffics",
+      "height": "400px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "mean",
+          "time_field": "@timestamp",
+          "value_field": "ReqProcTime",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "short",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              0,
+              1,
+              2,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "1m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": false,
+          "fill": 0,
+          "linewidth": 3,
+          "points": true,
+          "pointradius": 2,
+          "bars": false,
+          "stack": false,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": false,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "title": "HTTP Response (In Seconds)"
+        },
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "mean",
+          "time_field": "@timestamp",
+          "value_field": "ReqProcTime",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "short",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              3,
+              10,
+              11,
+              12
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "1m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": true,
+          "fill": 0,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": true,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "title": "SQL Connection (In Seconds)"
+        }
+      ],
+      "notice": false
+    },
+    {
+      "title": "Java Virtual Machine Performances",
+      "height": "400px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 6,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "mean",
+          "time_field": "@timestamp",
+          "value_field": "value",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "bytes",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              16,
+              17,
+              18
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "1m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": false,
+          "fill": 0,
+          "linewidth": 3,
+          "points": true,
+          "pointradius": 2,
+          "bars": false,
+          "stack": false,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": false,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "cumulative",
+            "query_as_alias": true
+          },
+          "title": "Grabage Collection"
+        }
+      ],
+      "notice": false
+    },
+    {
+      "title": "System Perfromances",
+      "height": "250px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "mean",
+          "time_field": "@timestamp",
+          "value_field": "value",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "none",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              13,
+              14,
+              15
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "1m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": false,
+          "fill": 0,
+          "linewidth": 3,
+          "points": false,
+          "pointradius": 5,
+          "bars": true,
+          "stack": true,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": false,
+          "timezone": "utc",
+          "percentage": true,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "individual",
+            "query_as_alias": true
+          },
+          "title": "CPU Performances"
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "mean",
+          "time_field": "@timestamp",
+          "value_field": "value",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "none",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              19,
+              20
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "1m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": true,
+          "fill": 4,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": false,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": false,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "individual",
+            "query_as_alias": true
+          },
+          "title": "Used Memory and Swap"
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "mean",
+          "time_field": "@timestamp",
+          "value_field": "value",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "none",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              21,
+              22
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "1m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": true,
+          "fill": 4,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": false,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "individual",
+            "query_as_alias": true
+          },
+          "title": "Disk Root Operations"
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "mean",
+          "time_field": "@timestamp",
+          "value_field": "value",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "short",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              25,
+              26
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "1m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": true,
+          "fill": 4,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": false,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "individual",
+            "query_as_alias": true
+          },
+          "title": "Number of Traffic Packets"
+        },
+        {
+          "span": 4,
+          "editable": true,
+          "type": "histogram",
+          "loadingEditor": false,
+          "mode": "mean",
+          "time_field": "@timestamp",
+          "value_field": "value",
+          "x-axis": true,
+          "y-axis": true,
+          "scale": 1,
+          "y_format": "short",
+          "grid": {
+            "max": null,
+            "min": 0
+          },
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              23,
+              24
+            ]
+          },
+          "annotate": {
+            "enable": false,
+            "query": "*",
+            "size": 20,
+            "field": "_type",
+            "sort": [
+              "_score",
+              "desc"
+            ]
+          },
+          "auto_int": true,
+          "resolution": 100,
+          "interval": "1m",
+          "intervals": [
+            "auto",
+            "1s",
+            "1m",
+            "5m",
+            "10m",
+            "30m",
+            "1h",
+            "3h",
+            "12h",
+            "1d",
+            "1w",
+            "1y"
+          ],
+          "lines": true,
+          "fill": 4,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "spyable": true,
+          "zoomlinks": true,
+          "options": true,
+          "legend": true,
+          "show_query": true,
+          "interactive": true,
+          "legend_counts": false,
+          "timezone": "browser",
+          "percentage": false,
+          "zerofill": false,
+          "derivative": false,
+          "tooltip": {
+            "value_type": "individual",
+            "query_as_alias": true
+          },
+          "title": "Number of Network Connections"
+        },
+        {
+          "error": false,
+          "span": 4,
+          "editable": true,
+          "type": "terms",
+          "loadingEditor": false,
+          "field": "type",
+          "exclude": [],
+          "missing": false,
+          "other": false,
+          "size": 10,
+          "order": "mean",
+          "style": {
+            "font-size": "10pt"
+          },
+          "donut": false,
+          "tilt": false,
+          "labels": true,
+          "arrangement": "horizontal",
+          "chart": "pie",
+          "counter_pos": "above",
+          "spyable": true,
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              27,
+              28
+            ]
+          },
+          "tmode": "terms_stats",
+          "tstat": "mean",
+          "valuefield": "value",
+          "title": "Space of Disk Root (MB)"
+        }
+      ],
+      "notice": false
+    },
+    {
+      "title": "Processes Information",
+      "height": "150px",
+      "editable": true,
+      "collapse": false,
+      "collapsable": true,
+      "panels": [
+        {
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "table",
+          "loadingEditor": false,
+          "size": 20,
+          "pages": 5,
+          "offset": 0,
+          "sort": [
+            "@timestamp",
+            "desc"
+          ],
+          "overflow": "min-height",
+          "fields": [
+            "@timestamp",
+            "UsrName",
+            "VirtualMem",
+            "SharedMem",
+            "NumActiveThreads",
+            "NonIOpgFaults",
+            "Nice",
+            "CpuUsg"
+          ],
+          "highlight": [],
+          "sortable": true,
+          "header": true,
+          "paging": true,
+          "field_list": true,
+          "all_fields": false,
+          "trimFactor": 300,
+          "localTime": false,
+          "timeField": "@timestamp",
+          "spyable": true,
+          "queries": {
+            "mode": "selected",
+            "ids": [
+              29
+            ]
+          },
+          "style": {
+            "font-size": "9pt"
+          },
+          "normTimes": true,
+          "title": "Name: Proc_gpkupdateicon"
+        }
+      ],
+      "notice": false
+    }
+  ],
+  "editable": true,
+  "failover": false,
+  "index": {
+    "interval": "none",
+    "pattern": "[logstash-]YYYY.MM.DD",
+    "default": "_all",
+    "warm_fields": true
+  },
+  "style": "dark",
+  "panel_hints": true,
+  "pulldowns": [
+    {
+      "type": "query",
+      "collapse": false,
+      "notice": false,
+      "enable": true,
+      "query": "*",
+      "pinned": true,
+      "history": [
+        "dev:\"Proc_gpkupdateicon\"",
+        "dev:\"Df_VolGrouplv_root \" AND type:\"Used\"",
+        "dev:\"Df_VolGrouplv_root \" AND type:\"Avail\"",
+        "type:\"PcktsSent\"",
+        "type:\"PcktsRcv\"",
+        "type:\"PssConOpn\"",
+        "type:\"ActConOpn\"",
+        "dev:\"Disk_VolGrouplv_root\" AND type:\"W_out\"",
+        "dev:\"Disk_VolGrouplv_root\" AND type:\"R_in\"",
+        "type:\"Swap_used\""
+      ],
+      "remember": 10
+    },
+    {
+      "type": "filtering",
+      "collapse": false,
+      "notice": true,
+      "enable": true
+    }
+  ],
+  "nav": [
+    {
+      "type": "timepicker",
+      "collapse": false,
+      "notice": false,
+      "enable": true,
+      "status": "Stable",
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ],
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "timefield": "@timestamp",
+      "now": false,
+      "filter_id": 0
+    }
+  ],
+  "loader": {
+    "save_gist": false,
+    "save_elasticsearch": true,
+    "save_local": true,
+    "save_default": true,
+    "save_temp": true,
+    "save_temp_ttl_enable": true,
+    "save_temp_ttl": "30d",
+    "load_gist": false,
+    "load_elasticsearch": true,
+    "load_elasticsearch_size": 20,
+    "load_local": false,
+    "hide": false
+  },
+  "refresh": "10s"
+}
