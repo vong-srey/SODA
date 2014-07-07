@@ -13,7 +13,7 @@ OHP_EVN_PARAM (?:%{URIPATH}|%{OHP_DB_REQ_PARAM})
 
 STARTTIME [a-zA-Z0-9\s:./._-]+
 ANYTHING [.]*
-THREAD_NAME [\S]+
+THREAD_NAME [a-zA-Z-0-9\!\+\(\)\[\]\.\,\-\_\;\:\~\/\$\'\{\}\=\@\#\%\s]*
 
 #UAGS : User Agent String. it is used to grab all the chars sets that we don't want to include
 #a-z A-Z 0-9 ! + ( ) . , - ; : [ ] _ ~ whiteSpace /

@@ -166,7 +166,8 @@ public class ProcsCollector extends CollectorTool{
 	
 	
 	/**
-	 * This method is adapted from Sigar examples
+	 * This method is adapted from Sigar examples.
+	 * It produced the formated time HH:mm (if less than 24hrs) or MMMd (otherwise).
 	 * @param time
 	 * @return
 	 */
