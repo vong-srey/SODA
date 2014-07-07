@@ -54,7 +54,7 @@ public class NetworkCollector extends CollectorTool{
 		
 		Tcp stat = sigar.getTcp();
 		
-		map.put(this.DEVICE_NAME, "Network-TCP");
+		map.put(this.DEVICE_NAME, "NetwTCP");
 
 		/* ***********************************************************************************
 		 * Appending the log data into the strBuilder.

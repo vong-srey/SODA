@@ -60,7 +60,7 @@ public class MemoryCollector extends CollectorTool{
         
         Map<String, String> map = new LinkedHashMap<String, String>();
         
-        map.put(this.DEVICE_NAME, "Memory-Swap");
+        map.put(this.DEVICE_NAME, "MemSwap");
 
 		/* ***********************************************************************************
 		 * Appending the log data into the strBuilder.

@@ -1,5 +1,6 @@
 .fatjar
 .DS_Store
+Logs/*
 **/.DS_Store
 
 

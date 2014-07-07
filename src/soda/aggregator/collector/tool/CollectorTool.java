@@ -249,7 +249,7 @@ public abstract class CollectorTool extends Thread implements Serializable{
 
 		//return Sigar.formatSize(size * 1024);  (Sigar.formatSize(sizeInByte) will return according the the value, MB, GB or TB)
 		
-		return String.valueOf(size * 1024);
+		return String.valueOf(size * 1024 * 1024);
 	}
 	
 	
@@ -267,7 +267,7 @@ public abstract class CollectorTool extends Thread implements Serializable{
 
 		//return Sigar.formatSize(size * 1024);  (Sigar.formatSize(sizeInByte) will return according the the value, MB, GB or TB)
 		
-		return String.valueOf(size / 1024);
+		return String.valueOf(size / (1024 * 1024));
 	}
 	
 	

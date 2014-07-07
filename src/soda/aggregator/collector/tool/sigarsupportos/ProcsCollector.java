@@ -69,7 +69,9 @@ public class ProcsCollector extends CollectorTool{
 	public Map<String, String> getPerformanceOfGivenPID(String pid){
 		Map<String, String> performance = new LinkedHashMap<String, String>();
 		
-		performance.put(DEVICE_NAME, pidsNames.get(pid));
+		String name = pidsNames.get(pid);
+		name = name.replaceAll("\\W", ""); //remove all non-word (word: [a-zA-Z0-9]) chars
+		performance.put(DEVICE_NAME, "Proc_"+name);
 		
 		DecimalFormat d = new DecimalFormat("0.0");
 		
@@ -79,6 +81,9 @@ public class ProcsCollector extends CollectorTool{
 		 * in setupLogHeader() method 
 		 * ***********************************************************************************/
 		strBuilder.setLength(0);
+		
+		strBuilder.append(pid);															// pid of the process
+		strBuilder.append(" ");
 		
 		try{
 			ProcCredName procCredName = sigar.getProcCredName(pid);
@@ -207,14 +212,15 @@ public class ProcsCollector extends CollectorTool{
 	@Override
 	public void setupLogHeader() {
 		logHeader = "LogTimeStamp\t"
-					+ "ProcessPID\t"
+					+ "ProcName\t"
+					+ "PID\t"
 					+ "UserName\t" 
 					+ "OwnerGroup\t" 
 					+ "StartTime\t" 
 					+ "CpuSysTime\t" 
 					+ "CpuUserTime\t" 
 					+ "CpuUsage-%\t"
-					+ "State\t" 
+					+ "State(R:Running, S:Sleep)\t"   
 					+ "NumActiveThreads\t" 
 					+ "Priority\t" 
 					+ "Nice\t"
@@ -230,6 +236,9 @@ public class ProcsCollector extends CollectorTool{
 	
 	
 	
+	/**
+	 * A helper method to Constructor to set up a list to store all the PIDs that need to be logged.
+	 */
 	private void setupPIDsListFromDefaultConfigFile(){
 		// if you changed the property in the config file, please double check the key "ProcsCollectorPIDsList"
 		String pidsString = ConfigReader.getProperty("ProcsCollectorPIDsList");

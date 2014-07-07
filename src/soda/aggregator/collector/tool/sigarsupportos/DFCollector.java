@@ -70,11 +70,12 @@ public class DFCollector extends CollectorTool{
 		
 		// get the volume name
 		String name = fs.getDevName();
-		// if there's no "/" => substring start from 0 (-1 + 1)
-		// else it will start from index + 1 ("/" will not be included)
+		// get the last text from "/"
+		// e.g. /root/vol-s00  =>  we use only vol-s00
 		name = name.substring(name.lastIndexOf("/") + 1);
+		name = name.replaceAll("\\W", ""); //remove all non-word (word: [a-zA-Z0-9]) chars
 		
-		performance.put(DEVICE_NAME, "DF-Vol-"+name);
+		performance.put(DEVICE_NAME, "DF-Df_"+name);
 		
 		/* ***********************************************************************************
 		 * Appending the log data into the strBuilder.
