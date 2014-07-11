@@ -34,6 +34,10 @@ public class TestCollectorFactoryManager {
 	
 	
 	
+	/**
+	 * a test case to test the process of setting up environment before the program starts
+	 * it is also used to set up environment before each test case starts too
+	 */
 	@Test
 	public void setupTestCases() {
 		ConfigReader.setDefaultConfigPath("./ConfigForTest.cfg");

@@ -472,7 +472,7 @@ public class LoggerBuilder {
 			for(String deviceName : devicesNames){
 				// by not assigning any appender and layout into the logger.
 				// the logger will not be able to log.
-				loggers.put(deviceName, logger);
+				loggers.put(deviceName, temp);
 			}
 			return loggers;
 		}

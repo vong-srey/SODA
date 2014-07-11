@@ -143,6 +143,16 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	
 	
 	/**
+	 * getter of loggers
+	 * @return
+	 */
+	public Map<String, Logger> getLoggers(){
+		return loggers;
+	}
+	
+	
+	
+	/**
 	 * collect a set of maps. A map contains "Performance Description" (as a key) and "Performance Value" from the implemented CollectorTool
 	 * @return a set of maps. a map (LinkedHashMap) contains "Performance Description" (as a key) and "Performance Value" from the implemented CollectorTool. Each set of map represent the data of each different component (e.g. a set of CPU0, set of CPU1 and so on)
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
@@ -255,10 +265,10 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 * @return String of size in Byte
 	 */
 	public String megaByteToByte(long size){
+		if(size >= Integer.MAX_VALUE) throw new IllegalArgumentException();
+		
 		if(size < 0) return "0";
 
-		//return Sigar.formatSize(size * 1024);  (Sigar.formatSize(sizeInByte) will return according the the value, MB, GB or TB)
-		
 		return String.valueOf(size * 1024 * 1024);
 	}
 	

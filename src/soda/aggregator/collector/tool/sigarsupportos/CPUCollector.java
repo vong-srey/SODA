@@ -38,7 +38,9 @@ public class CPUCollector extends CollectorTool{
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
 	 */
 	public CPUCollector() throws SigarException{
+		// configure loggers for all CPU cores
 		configureLogger();
+		// LoggerBuilder.getAppLogger() is the logger to log this SODA performances
 		LoggerBuilder.getAppLogger().info("CPUCollector is instantiated successfully");
 	}
 
@@ -96,7 +98,7 @@ public class CPUCollector extends CollectorTool{
 		// a list of each core of the CPU
 		CpuPerc[] cpus = sigar.getCpuPercList();
 		
-		Set<Map<String, String>> perfSet = new LinkedHashSet();
+		Set<Map<String, String>> perfSet = new LinkedHashSet<Map<String, String>>();
 		
 		// put CPU-Totals into the performances
 		perfSet.add(getPerformanceOfGivenCpuCore(cpuTotal, "CPUs"));
