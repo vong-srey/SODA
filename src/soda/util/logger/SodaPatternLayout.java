@@ -35,6 +35,10 @@ public class SodaPatternLayout extends PatternLayout{
 	 */
 	public SodaPatternLayout(String header){
 		super();
+		
+		// check the given parameter
+		if(header == null) throw new IllegalArgumentException();
+			
 		setHeader(header);
 	}
 	
@@ -56,8 +60,11 @@ public class SodaPatternLayout extends PatternLayout{
 	 * @param header - new header content
 	 */
 	public void setHeader(String header){
-		String lineSeparator = System.getProperty("line.separator");
+		// check the given parameter
+		if(header == null) throw new IllegalArgumentException();
 		
+		// add a line seperator to the header
+		String lineSeparator = System.getProperty("line.separator");
 		header = header.trim();
 		if(!header.isEmpty() && !header.endsWith(lineSeparator)){
 			header += lineSeparator;

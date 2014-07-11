@@ -5,7 +5,15 @@ import java.util.List;
 
 import soda.aggregator.collector.tool.CollectorTool;
 
-public abstract class ConfigKeysValues {
+
+
+/**
+ * This file is stored all the static values needed for SODA
+ * 
+ * @author vong vithyea srey
+ *
+ */
+public class ConfigKeysValues {
 	
 	/**
 	 * OS key

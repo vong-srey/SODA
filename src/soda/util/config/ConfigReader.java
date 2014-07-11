@@ -39,6 +39,10 @@ public class ConfigReader {
 	 * @return Properties object
 	 */
 	public static Properties getConfigProperty(String path){
+		if(path==null || path.trim().isEmpty()){
+			throw new IllegalArgumentException();
+		}
+		
 		Properties configFile = new Properties();
 		
 		File file = new File(path);
@@ -65,6 +69,10 @@ public class ConfigReader {
 	 * @throws NoSuchElementException if the propName key is not found
 	 */
 	public static String getPropertyFrom(String path, String propName) throws NoSuchElementException{
+		if(propName==null || propName.trim().isEmpty()
+				|| path==null || path.trim().isEmpty()){
+			throw new IllegalArgumentException();
+		}
 		
 		Properties configFile = getConfigProperty(path);
 		String property = configFile.getProperty(propName);
@@ -85,7 +93,11 @@ public class ConfigReader {
 	 * @param propName that need to get its property value
 	 * @return
 	 */
-	public static String getProperty(String propName){	
+	public static String getProperty(String propName){
+		if(propName==null || propName.trim().isEmpty()){
+			throw new IllegalArgumentException();
+		}
+		
 		return getPropertyFrom(DEFAULT_CONFIG_PATH, propName);
 	}
 	
@@ -96,18 +108,11 @@ public class ConfigReader {
 	 * @param path to the config file that used to set the DEFAULT_CONFIG_PATH
 	 */
 	public static void setDefaultConfigPath(String path){
+		if(path==null || path.trim().isEmpty()){
+			throw new IllegalArgumentException();
+		}
+		
 		DEFAULT_CONFIG_PATH = path;
-	}
-	
-	
-	
-	/**
-	 * check the given OS name whether it is supported by this application
-	 * @param os - OS name
-	 * @return true if the OS name is in the supported OS(es) list.
-	 */
-	public static boolean isGivenOSSupported(String os){
-		return ConfigKeysValues.SUPPORT_OS.contains(os);
 	}
 	
 	
@@ -119,4 +124,18 @@ public class ConfigReader {
 		return DEFAULT_CONFIG_PATH;
 	}
 	
+	
+	
+	/**
+	 * check the given OS name whether it is supported by this application
+	 * @param os - OS name
+	 * @return true if the OS name is in the supported OS(es) list.
+	 */
+	public static boolean isGivenOSSupported(String os){
+		if(os==null || os.trim().isEmpty()){
+			throw new IllegalArgumentException();
+		}
+		
+		return ConfigKeysValues.SUPPORT_OS.contains(os);
+	}
 }

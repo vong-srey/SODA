@@ -133,6 +133,16 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	
 	
 	/**
+	 * getter of stopCollection status
+	 * @return
+	 */
+	public boolean getStopCollectionStatus(){
+		return stopCollection.get();
+	}
+	
+	
+	
+	/**
 	 * collect a set of maps. A map contains "Performance Description" (as a key) and "Performance Value" from the implemented CollectorTool
 	 * @return a set of maps. a map (LinkedHashMap) contains "Performance Description" (as a key) and "Performance Value" from the implemented CollectorTool. Each set of map represent the data of each different component (e.g. a set of CPU0, set of CPU1 and so on)
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)

@@ -40,31 +40,53 @@ public class LoggerBuilder {
 	 */
 	private FileAppender appender;
 	
+	
+	
 	/**
 	 * replace the default appender (which is CustodianDailyRollingFaileAppender object) with the given app.
 	 * @param app is FileAppender object
 	 */
 	public void setAppender(FileAppender app){
+		if(app == null) throw new IllegalArgumentException();
 		appender = app;
 	}
+	
+	
+	
+	/**
+	 * getter of this.appender
+	 * @return
+	 */
+	public FileAppender getAppender(){
+		return appender;
+	}
 
+	
+	
 	/**
 	 * Set a name for this logger
 	 * @param name
 	 */
 	public void setLoggerName(String name){
+		if(name == null) throw new IllegalArgumentException();
 		appender.setName(name);
 	}
 
+	
+	
 	/**
 	 * Set the path for the logger file.
 	 * If the appender is the CustodianDailyRollingFaileAppender, the logger file will be the name of this logger+TodayDate
 	 * @param path
 	 */
 	public void setLoggerFile(String path){
+		if(path == null) throw new IllegalArgumentException();
+		
 		appender.setFile(path);
 	}
 
+	
+	
 	/**
 	 * If given bool is true, the log will be flush out, without holding on the buffer.
 	 * @param bool - either immediateFlush is true or false
@@ -73,14 +95,24 @@ public class LoggerBuilder {
 		appender.setImmediateFlush(bool);
 	}
 
+	
+	
 	/**
 	 * If given value String is true, the log will be flush out, without holding on the buffer.
 	 * @param value - either immediateFlush is true or false
 	 */
 	public void setImmediateFlush(String value){
-		appender.setImmediateFlush(value.equalsIgnoreCase("true"));
+		if(value == null) throw new IllegalArgumentException();
+		
+		if(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("yes")){
+			appender.setImmediateFlush(true);
+		} else {
+			appender.setImmediateFlush(false);
+		}
 	}
 
+	
+	
 	/**
 	 * Set the appending. In generally it should be true
 	 * @param value
@@ -89,29 +121,52 @@ public class LoggerBuilder {
 		appender.setAppend(value);
 	}
 
+	
+	
 	/**
 	 * Set the appending. In generally it should be true
 	 * @param value
 	 */
 	public void setAppend(String value){
-		appender.setAppend(value.equalsIgnoreCase("true"));
+		if(value == null) throw new IllegalArgumentException();
+		
+		if(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("yes")){
+			appender.setAppend(true);
+		} else {
+			appender.setAppend(false);
+		}
 	}
 
+	
+	
 	/**
 	 * Set the number of max days that the logs should be stored.
 	 * After this number has been reached, it will remove the earliest log and add a new log 
 	 * @param numday - maximum number of log of the days should be kept
 	 */
 	public void setMaxNumberOfDays(int numday){
+		if(numday == Integer.MAX_VALUE) throw new IllegalArgumentException();
+		
 		setMaxNumberOfDays(String.valueOf(numday));
 	}
 
+	
+	
 	/**
 	 * Set the number of max days that the logs should be stored.
 	 * After this number has been reached, it will remove the earliest log and add a new log 
 	 * @param numday - maximum number of log of the days should be kept
 	 */
 	public void setMaxNumberOfDays(String numDayInString){
+		if(numDayInString==null) 
+			throw new IllegalArgumentException();
+		
+		try{
+			Integer.parseInt(numDayInString);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException();
+		}
+		
 		if(appender instanceof CustodianDailyRollingFileAppender){
 			((CustodianDailyRollingFileAppender)appender).setMaxNumberOfDays(numDayInString);
 		} else {
@@ -119,12 +174,18 @@ public class LoggerBuilder {
 		}
 	}
 
+	
+	
 	/**
 	 * If the compressBackup is true, the earliest log will be compressed before removed.
 	 * This flag relates to maxNumberOfDays. Please look at setMaxNumberOfDays() method.
 	 * @param value - true or false
 	 */
 	public void setCompressBackups(String value){
+		if(value == null){
+			throw new IllegalArgumentException();
+		}
+		
 		if(appender instanceof CustodianDailyRollingFileAppender){
 			((CustodianDailyRollingFileAppender)appender).setCompressBackups(value);
 		} else {
@@ -132,6 +193,8 @@ public class LoggerBuilder {
 		}
 	}
 
+	
+	
 	/**
 	 * If the compressBackup is true, the earliest log will be compressed before removed.
 	 * This flag relates to maxNumberOfDays. Please look at setMaxNumberOfDays() method.
@@ -141,24 +204,33 @@ public class LoggerBuilder {
 		setCompressBackups(String.valueOf(value));
 	}
 
+	
+	
 	/**
 	 * set the threhold of logger to the given threshold parameter
 	 * @param threshold
 	 */
 	public void setAppenderThreshold(String threshold){
+		if(threshold == null) throw new IllegalArgumentException();
 		appender.setThreshold(Level.toPriority(threshold));
 	}
 
+	
+	
 	/**
 	 * set the pattern of the layout that the appender used to produce the log format.
 	 * @param pattern
 	 */
 	public void setLayoutPattern(String pattern, String header){
+		if(pattern==null || header==null) throw new IllegalArgumentException();
+		
 		SodaPatternLayout ly = new SodaPatternLayout(header);
 		ly.setConversionPattern(pattern);
 		appender.setLayout(ly);
 	}
 
+	
+	
 	/**
 	 * read the config file (given by its path), and set all the CustodianDailyRollingFaileAppender properties.
 	 * @param configFilePath - path to the config file.
@@ -174,6 +246,8 @@ public class LoggerBuilder {
 		return helperSetAppenderFromConfigFile(configFilePath, appenderName);
 	}
 
+	
+	
 	/**
 	 * A helper to read the config file (given by its path), and set all the CustodianDailyRollingFaileAppender properties.
 	 * @param configFilePath - path to the config file.
@@ -197,6 +271,8 @@ public class LoggerBuilder {
 		return true;
 	}
 
+	
+	
 	/**
 	 * read the default config file (given by its path), and set all the CustodianDailyRollingFaileAppender properties.
 	 * @param appenderName - name of the logger and appender.
@@ -204,6 +280,8 @@ public class LoggerBuilder {
 	public boolean setAppenderFromDefaultConfigFile(String appenderName){
 		return setAppenderFromConfigFile(ConfigKeysValues.getDefaultConfigPath(), appenderName);
 	}
+	
+	
 	
 	/**
 	 * return the Logger product.
@@ -280,6 +358,8 @@ public class LoggerBuilder {
 		appenders = new ArrayList<CustodianDailyRollingFileAppender>();
 	}
 	
+	
+	
 	/**
 	 * a method that will read the config properties from default config file and set up a logger that 
 	 * will be used anywhere in the application to log all the application acitivities, status
@@ -304,7 +384,7 @@ public class LoggerBuilder {
 		String append = ConfigReader.getProperty(appLoggerName + "LogAppend");
 		temp.setAppend(append.equalsIgnoreCase("true"));
 		temp.setMaxNumberOfDays(ConfigReader.getProperty(appLoggerName + "LogMaxNumberOfDays"));
-		temp.setCompressBackups(appLoggerName + "LogCompressBackups");
+		temp.setCompressBackups(ConfigReader.getProperty(appLoggerName + "LogCompressBackups"));
 		String threshold = ConfigReader.getProperty(appLoggerName + "LogThreshold");
 		temp.setThreshold(Level.toPriority(threshold));
 		// set layout (our customized PatternLayout)
@@ -318,6 +398,8 @@ public class LoggerBuilder {
 		return true;
 	}
 	
+	
+	
 	/**
 	 * a wrapper to return RootLogger object that shared among the application.
 	 * This RootLogger is used to log the application log itself.
@@ -325,6 +407,16 @@ public class LoggerBuilder {
 	 */
 	public static Logger getAppLogger(){
 		return appLogger;
+	}
+	
+	
+	
+	/**
+	 * @return 
+	 * 
+	 */
+	public List<CustodianDailyRollingFileAppender> getAppenders(){
+		return appenders;
 	}
 	
 	

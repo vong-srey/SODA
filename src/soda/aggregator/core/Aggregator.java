@@ -21,6 +21,11 @@ public class Aggregator {
 	 * list of all avaliable collectors.
 	 */
 	private List<CollectorTool> collectors;
+	
+	/**
+	 * a factory that support this OS, this factory will be used to manufacture all the collectors needed for this OS
+	 */
+	private CollectorFactory collectorFactory;
 
 	
 	
@@ -39,12 +44,30 @@ public class Aggregator {
 	public void runAggregation() throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException{
 		// Initiating the factory that support this OS
 		// telling factoryManager to use this OS factory to get all the collectors that support this OS
-		CollectorFactory cf = CollectorFactoryManager.getCollectorFactory();
-		collectors = CollectorFactoryManager.getAllCollectors(cf);
+		collectorFactory = CollectorFactoryManager.getCollectorFactory();
+		collectors = CollectorFactoryManager.getAllCollectors(collectorFactory);
 		
 		for(CollectorTool ct : collectors){
 			ct.start();
 		}	
+	}
+	
+	
+	
+	/**
+	 * getter for collector list
+	 */
+	public List<CollectorTool> getAllCollectors(){
+		return collectors;
+	}
+	
+	
+	
+	/**
+	 * getter for collectorFactory
+	 */
+	public CollectorFactory getCollectorFactory(){
+		return collectorFactory;
 	}
 
 }
