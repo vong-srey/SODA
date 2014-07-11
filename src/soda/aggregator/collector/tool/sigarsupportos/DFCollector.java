@@ -1,6 +1,5 @@
 package soda.aggregator.collector.tool.sigarsupportos;
 
-import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -9,7 +8,6 @@ import java.util.Set;
 import org.hyperic.sigar.FileSystem;
 import org.hyperic.sigar.FileSystemUsage;
 import org.hyperic.sigar.NfsFileSystem;
-import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
 import soda.aggregator.collector.tool.CollectorTool;

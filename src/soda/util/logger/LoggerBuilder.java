@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
 import soda.aggregator.collector.tool.CollectorTool;
 import soda.util.config.ConfigKeysValues;

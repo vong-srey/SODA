@@ -171,7 +171,9 @@ public class ProcsCollector extends CollectorTool{
 	 * @param time
 	 * @return
 	 */
-	private String getFormatedStartTime(long time) {
+	public String getFormatedStartTime(long time) {
+		if(time < 0) time = 0;
+		
         if (time == 0) {
             return "00:00";
         }

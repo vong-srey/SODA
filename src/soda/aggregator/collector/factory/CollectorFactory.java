@@ -3,11 +3,6 @@ package soda.aggregator.collector.factory;
 import org.hyperic.sigar.SigarException;
 
 import soda.aggregator.collector.tool.CollectorTool;
-import soda.aggregator.collector.tool.sigarsupportos.DFCollector;
-import soda.aggregator.collector.tool.sigarsupportos.DiskCollector;
-import soda.aggregator.collector.tool.sigarsupportos.MemoryCollector;
-import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
-import soda.aggregator.collector.tool.sigarsupportos.ProcsCollector;
 
 
 /**
