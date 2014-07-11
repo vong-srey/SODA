@@ -64,10 +64,6 @@ public class TestCustodianDailyRollingFileAppender {
 		} catch (NullPointerException e) {}
 
 		try{
-			new CustodianDailyRollingFileAppender(null, "", null);
-		} catch (NullPointerException e) {}
-
-		try{
 			new CustodianDailyRollingFileAppender(null, null, "");
 		} catch (NullPointerException e) {}
 		
