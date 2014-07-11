@@ -5,12 +5,11 @@ import java.util.Set;
 
 import org.hyperic.sigar.SigarException;
 
-import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
+import soda.aggregator.collector.tool.CollectorTool;
 
 
 /**
  * Collector Tool that responsible to collect the network statistic (TCP, UDP in and out)
- * This tool aggregates Sigar.NetStat
  * 
  * This class is intentionally left unimplemented for the purpose to show how to
  * implement new Collector tool for Minix OS. So, you can do the same for other OS.
@@ -21,7 +20,7 @@ import soda.aggregator.collector.tool.sigarsupportos.NetworkCollector;
  * @author Vong Vithyea Srey
  *
  */
-public class MinixNetworkCollector extends NetworkCollector{
+public class MinixNetworkCollector extends CollectorTool{
 
 	public MinixNetworkCollector() throws SigarException {
 		super();
@@ -32,6 +31,12 @@ public class MinixNetworkCollector extends NetworkCollector{
 	public Set<Map<String, String>> getPerformance() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setupLogHeader() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -2,7 +2,7 @@ package soda.aggregator.collector.factory;
 
 import org.hyperic.sigar.SigarException;
 
-import soda.aggregator.collector.tool.sigarsupportos.CPUCollector;
+import soda.aggregator.collector.tool.CollectorTool;
 import soda.aggregator.collector.tool.sigarsupportos.DFCollector;
 import soda.aggregator.collector.tool.sigarsupportos.DiskCollector;
 import soda.aggregator.collector.tool.sigarsupportos.MemoryCollector;
@@ -28,7 +28,7 @@ public interface CollectorFactory {
 	 * @return collector and logger of CPU performance for this OS
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
-	public CPUCollector	getCPUCollector() throws SigarException;
+	public CollectorTool getCPUCollector() throws SigarException;
 	
 	
 	
@@ -37,7 +37,7 @@ public interface CollectorFactory {
 	 * @return collector and logger of Memory performance for this OS
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
 	 */
-	public MemoryCollector getMemoryCollector() throws SigarException;
+	public CollectorTool getMemoryCollector() throws SigarException;
 	
 	
 	
@@ -46,7 +46,7 @@ public interface CollectorFactory {
 	 * @return collector and logger of DF performance for this OS
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
-	public DFCollector getDFCollector() throws SigarException;
+	public CollectorTool getDFCollector() throws SigarException;
 	
 	
 	
@@ -55,7 +55,7 @@ public interface CollectorFactory {
 	 * @return collector and logger of Disk performance for this OS
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
-	public DiskCollector getDiskCollector() throws SigarException;
+	public CollectorTool getDiskCollector() throws SigarException;
 	
 	
 	
@@ -64,7 +64,7 @@ public interface CollectorFactory {
 	 * @return collector and logger of Network performance for this OS
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
-	public NetworkCollector getNetworkCollector() throws SigarException;
+	public CollectorTool getNetworkCollector() throws SigarException;
 	
 	
 	
@@ -73,7 +73,7 @@ public interface CollectorFactory {
 	 * @return collector and logger of Processes performance for the specified PID (in config file) for this OS
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
-	public ProcsCollector getProcsCollector() throws SigarException;
+	public CollectorTool getProcsCollector() throws SigarException;
 	
 	
 	

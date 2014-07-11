@@ -5,12 +5,11 @@ import java.util.Set;
 
 import org.hyperic.sigar.SigarException;
 
-import soda.aggregator.collector.tool.sigarsupportos.CPUCollector;
+import soda.aggregator.collector.tool.CollectorTool;
 
 
 /**
  * Collector Tool that responsible to collect CPU performance
- * This tool aggregates Sigar.CpuInfo
  * 
  * This class is intentionally left unimplemented for the purpose to show how to
  * implement new CollectorTool for Minix OS. So, you can do the same for other OS.
@@ -21,7 +20,7 @@ import soda.aggregator.collector.tool.sigarsupportos.CPUCollector;
  * @author Vong Vithyea Srey
  *
  */
-public class MinixCPUCollector extends CPUCollector{
+public class MinixCPUCollector extends CollectorTool{
 
 	public MinixCPUCollector() throws SigarException {
 		super();
@@ -29,7 +28,13 @@ public class MinixCPUCollector extends CPUCollector{
 	}
 
 	@Override
-	public Set<Map<String, String>> getPerformance() {
+	public void setupLogHeader() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Set<Map<String, String>> getPerformance() throws SigarException {
 		// TODO Auto-generated method stub
 		return null;
 	}

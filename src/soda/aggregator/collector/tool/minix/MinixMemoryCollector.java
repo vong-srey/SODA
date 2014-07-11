@@ -5,12 +5,11 @@ import java.util.Set;
 
 import org.hyperic.sigar.SigarException;
 
-import soda.aggregator.collector.tool.sigarsupportos.MemoryCollector;
+import soda.aggregator.collector.tool.CollectorTool;
 
 
 /**
  * Collector Tool that responsible to collect the memory usages (Free, used, swap)
- * This tool aggregates Sigar.Free
  * 
  * This class is intentionally left unimplemented for the purpose to show how to
  * implement new Collector tool for Minix OS. So, you can do the same for other OS.
@@ -21,7 +20,7 @@ import soda.aggregator.collector.tool.sigarsupportos.MemoryCollector;
  * @author Vong Vithyea Srey
  *
  */
-public class MinixMemoryCollector extends MemoryCollector{
+public class MinixMemoryCollector extends CollectorTool{
 
 	public MinixMemoryCollector() throws SigarException {
 		super();
@@ -32,6 +31,12 @@ public class MinixMemoryCollector extends MemoryCollector{
 	public Set<Map<String, String>> getPerformance() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setupLogHeader() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

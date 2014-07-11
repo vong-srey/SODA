@@ -5,12 +5,11 @@ import java.util.Set;
 
 import org.hyperic.sigar.SigarException;
 
-import soda.aggregator.collector.tool.sigarsupportos.DFCollector;
+import soda.aggregator.collector.tool.CollectorTool;
 
 
 /**
  * Collector Tool that responsible to collect the disk usages (Free, used in %)
- * This tool aggregates Sigar.Df
  * 
  * This class is intentionally left unimplemented for the purpose to show how to
  * implement new Collector tool for Minix OS. So, you can do the same for other OS.
@@ -21,7 +20,7 @@ import soda.aggregator.collector.tool.sigarsupportos.DFCollector;
  * @author Vong Vithyea Srey
  *
  */
-public class MinixDFCollector extends DFCollector{
+public class MinixDFCollector extends CollectorTool{
 
 	public MinixDFCollector() throws SigarException {
 		super();
@@ -32,6 +31,12 @@ public class MinixDFCollector extends DFCollector{
 	public Set<Map<String, String>> getPerformance() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setupLogHeader() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

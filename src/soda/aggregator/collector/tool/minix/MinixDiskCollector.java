@@ -5,12 +5,11 @@ import java.util.Set;
 
 import org.hyperic.sigar.SigarException;
 
-import soda.aggregator.collector.tool.sigarsupportos.DiskCollector;
+import soda.aggregator.collector.tool.CollectorTool;
 
 
 /**
  * Collector Tool that responsible to collect the IO (read and write into disk %)
- * This tool aggregates Sigar.IoStat
  * 
  * This class is intentionally left unimplemented for the purpose to show how to
  * implement new Collector tool for Minix OS. So, you can do the same for other OS.
@@ -21,7 +20,7 @@ import soda.aggregator.collector.tool.sigarsupportos.DiskCollector;
  * @author Vong Vithyea Srey
  *
  */
-public class MinixDiskCollector extends DiskCollector{
+public class MinixDiskCollector extends CollectorTool{
 
 	public MinixDiskCollector() throws SigarException {
 		super();
@@ -32,6 +31,12 @@ public class MinixDiskCollector extends DiskCollector{
 	public Set<Map<String, String>> getPerformance() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setupLogHeader() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

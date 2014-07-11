@@ -2,6 +2,7 @@ package soda.aggregator.collector.factory;
 
 import org.hyperic.sigar.SigarException;
 
+import soda.aggregator.collector.tool.CollectorTool;
 import soda.aggregator.collector.tool.minix.MinixCPUCollector;
 import soda.aggregator.collector.tool.minix.MinixDFCollector;
 import soda.aggregator.collector.tool.minix.MinixDiskCollector;
@@ -30,7 +31,7 @@ public class MinixCollectorFactory implements CollectorFactory{
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)
 	 */
 	@Override
-	public MinixCPUCollector getCPUCollector() throws SigarException {
+	public CollectorTool getCPUCollector() throws SigarException {
 		// TODO Auto-generated method stub
 		return new MinixCPUCollector();
 	}
@@ -43,7 +44,7 @@ public class MinixCollectorFactory implements CollectorFactory{
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc)SigarException 
 	 */
 	@Override
-	public MinixMemoryCollector getMemoryCollector() throws SigarException {
+	public CollectorTool getMemoryCollector() throws SigarException {
 		// TODO Auto-generated method stub
 		return new MinixMemoryCollector();
 	}
@@ -56,7 +57,7 @@ public class MinixCollectorFactory implements CollectorFactory{
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
 	@Override
-	public MinixDFCollector getDFCollector() throws SigarException {
+	public CollectorTool getDFCollector() throws SigarException {
 		// TODO Auto-generated method stub
 		return new MinixDFCollector();
 	}
@@ -69,7 +70,7 @@ public class MinixCollectorFactory implements CollectorFactory{
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
 	@Override
-	public MinixDiskCollector getDiskCollector() throws SigarException {
+	public CollectorTool getDiskCollector() throws SigarException {
 		// TODO Auto-generated method stub
 		return new MinixDiskCollector();
 	}
@@ -82,7 +83,7 @@ public class MinixCollectorFactory implements CollectorFactory{
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
 	@Override
-	public MinixNetworkCollector getNetworkCollector() throws SigarException {
+	public CollectorTool getNetworkCollector() throws SigarException {
 		// TODO Auto-generated method stub
 		return new MinixNetworkCollector();
 	}
@@ -95,7 +96,7 @@ public class MinixCollectorFactory implements CollectorFactory{
 	 * @throws SigarException if the Method cannot retrieve the info about that hardware (i.e. for CPU, can't get number of core, etc) 
 	 */
 	@Override
-	public MinixProcsCollector getProcsCollector() throws SigarException {
+	public CollectorTool getProcsCollector() throws SigarException {
 		// TODO Auto-generated method stub
 		return new MinixProcsCollector();
 	}
