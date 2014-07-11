@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import test.soda.aggregator.collector.factory.TestCollectorFactoryManager;
+import test.soda.aggregator.collector.factory.TestSigarSupportAndCollectorFactory;
 import test.soda.aggregator.core.TestAggregator;
 import test.soda.util.config.TestConfigReader;
 import test.soda.util.logger.TestCustodianDailyRollingFileAppender;
@@ -14,7 +15,8 @@ import test.soda.util.logger.TestSodaPatternLayout;
 @RunWith(Suite.class)
 @SuiteClasses({TestSodaPatternLayout.class, TestCustodianDailyRollingFileAppender.class,
 	TestLoggerBuilder.class, TestConfigReader.class, TestAggregator.class,
-	TestCollectorFactoryManager.class})
+	TestCollectorFactoryManager.class, TestSigarSupportAndCollectorFactory.class,
+	})
 public class TestSoda {
 	/**
 	 * test suite to test all classes.

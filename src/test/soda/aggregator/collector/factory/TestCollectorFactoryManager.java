@@ -18,6 +18,15 @@ import soda.aggregator.core.Aggregator;
 import soda.util.config.ConfigReader;
 import soda.util.logger.LoggerBuilder;
 
+
+
+/**
+ * This Test aim to exercise CollectorFactoryManager class.
+ * This Test has achieved Code Coverage, Branch Coverage
+ * 
+ * @author vong vithyea srey
+ *
+ */
 public class TestCollectorFactoryManager {
 
 	public static CollectorFactory actualCollectorFactory;
@@ -30,7 +39,7 @@ public class TestCollectorFactoryManager {
 		ConfigReader.setDefaultConfigPath("./ConfigForTest.cfg");
 		LoggerBuilder.setAppenderForAppLoggerFromDefaultConfigFile();
 		
-		// setup expected value
+		// test expected value
 		try {
 			actualCollectorFactory = CollectorFactoryManager.getCollectorFactory();
 		} catch (InstantiationException | IllegalAccessException
