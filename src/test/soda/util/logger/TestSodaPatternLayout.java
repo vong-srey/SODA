@@ -3,10 +3,7 @@ package test.soda.util.logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.PatternLayout;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import soda.util.logger.SodaPatternLayout;
 
@@ -21,11 +18,6 @@ import soda.util.logger.SodaPatternLayout;
  */
 public class TestSodaPatternLayout {
 
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
-	
-	
-	
 	@Test
 	public void testDefaultConstructor() {
 		SodaPatternLayout pl = new SodaPatternLayout();
@@ -43,7 +35,7 @@ public class TestSodaPatternLayout {
 	
 	
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testContructorWithOneParameter(){
 		// test empty string parameter
 		SodaPatternLayout pl2 = new SodaPatternLayout("");
@@ -70,14 +62,12 @@ public class TestSodaPatternLayout {
 		
 		
 		// test null parameter
-		exception.expect(IllegalArgumentException.class);
 		new SodaPatternLayout(null);
-
 	}
 
 	
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testSetAndGetHeader(){
 		SodaPatternLayout pl = new SodaPatternLayout();
 		assertEquals("", pl.getHeader());
@@ -105,7 +95,6 @@ public class TestSodaPatternLayout {
 		assertTrue(!pl.getHeader().endsWith(System.getProperty("line.separator")));
 		
 		// tell null parameter
-		exception.expect(IllegalArgumentException.class);
 		pl.setHeader(null);
 	}
 	

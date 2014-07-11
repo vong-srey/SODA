@@ -15,6 +15,15 @@ import soda.aggregator.core.Aggregator;
 import soda.util.config.ConfigReader;
 import soda.util.logger.LoggerBuilder;
 
+
+
+/**
+ * This Test aim to exercise Aggreagtor class.
+ * This Test has achieved Code Coverage, Branch Coverage
+ * 
+ * @author vong vithyea srey
+ *
+ */
 public class TestAggregator {
 
 	@Test
@@ -22,10 +31,11 @@ public class TestAggregator {
 		ConfigReader.setDefaultConfigPath("./ConfigForTest.cfg");
 		LoggerBuilder.setAppenderForAppLoggerFromDefaultConfigFile();
 		
+		// setup expected value
 		CollectorFactory expectedCollectorFactory = CollectorFactoryManager.getCollectorFactory();
 		List<CollectorTool> expectedCollectors = CollectorFactoryManager.getAllCollectors(expectedCollectorFactory);
 		
-		
+		// setup actual values
 		Aggregator aggregator = new Aggregator();
 		aggregator.runAggregation();
 		List<CollectorTool> actualCollectors = aggregator.getAllCollectors();
@@ -33,6 +43,7 @@ public class TestAggregator {
 			ct.setStopCollection(false);
 		}
 		
+		// test valid partition
 		assertEquals(expectedCollectorFactory, aggregator.getCollectorFactory());
 		try{
 			for(int i=0; i<expectedCollectors.size(); i++){

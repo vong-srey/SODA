@@ -15,15 +15,26 @@ import org.junit.Test;
 
 import soda.util.config.ConfigReader;
 
+
+
+/**
+ * This Test aim to exercise ConfigReader and ConfigValue class.
+ * This Test has achieved Code Coverage, Branch Coverage
+ * 
+ * @author vong vithyea srey
+ *
+ */
 public class TestConfigReader {
 
 	@Test
 	public void testGetterSetterDefaultConfigPath() {
+		// test valid partition
 		assertEquals(ConfigReader.getDefaultConfigPath(), "./config.cfg");
 		
 		ConfigReader.setDefaultConfigPath("helloworld");
 		assertEquals(ConfigReader.getDefaultConfigPath(), "helloworld");
 		
+		// test invalid partition
 		try{
 			ConfigReader.setDefaultConfigPath("  ");
 			fail("Expected IllegalArgumentException");
@@ -34,6 +45,7 @@ public class TestConfigReader {
 			fail("Expected IllegalArgumentException");
 		} catch (IllegalArgumentException e){}
 		
+		// test valid partition and prepare for next test cases
 		ConfigReader.setDefaultConfigPath("./ConfigForTest.cfg");
 		assertEquals(ConfigReader.getDefaultConfigPath(), "./ConfigForTest.cfg");
 	}
@@ -42,10 +54,12 @@ public class TestConfigReader {
 	
 	@Test
 	public void testIsGivenOSSupported(){
+		// test valid partition
 		assertTrue(ConfigReader.isGivenOSSupported("SigarSupport"));
 		assertTrue(ConfigReader.isGivenOSSupported("Minix"));
 		assertFalse(ConfigReader.isGivenOSSupported("helloworld"));
 		
+		// test invalid partition
 		try{
 			ConfigReader.isGivenOSSupported("  ");
 			fail("Expected IllegalArgumentException");
@@ -61,6 +75,7 @@ public class TestConfigReader {
 	
 	@Test
 	public void testGettingProperty(){
+		// test valid partition
 		assertEquals(ConfigReader.getProperty("AppLogger"), "yes");
 		assertEquals(ConfigReader.getProperty("CPUCollector"), "no");
 		assertEquals(ConfigReader.getProperty("DiskCollectorLogCompressBackups"), "true");
@@ -69,6 +84,7 @@ public class TestConfigReader {
 		assertEquals(ConfigReader.getProperty("NetworkCollectorLogMaxNumberOfDays"), "4");
 		assertEquals(ConfigReader.getProperty("AppLoggerLogPattern"), "%d{dd/MMM/yyyy-HH:mm:ss.SSS} %-5p %c{1}:%L - %m%n");
 		
+		// test invalid partition
 		try{
 			ConfigReader.getProperty("helloworld");
 		} catch (NoSuchElementException e){}
@@ -90,6 +106,7 @@ public class TestConfigReader {
 	public void testGettingPropertyFromAFile(){
 		String filename = "./ConfigForTest.cfg";
 		
+		// test valid partition
 		assertEquals(ConfigReader.getPropertyFrom(filename, "AppLogger"), "yes");
 		assertEquals(ConfigReader.getPropertyFrom(filename, "CPUCollector"), "no");
 		assertEquals(ConfigReader.getPropertyFrom(filename, "DiskCollectorLogCompressBackups"), "true");
@@ -98,6 +115,7 @@ public class TestConfigReader {
 		assertEquals(ConfigReader.getPropertyFrom(filename, "NetworkCollectorLogMaxNumberOfDays"), "4");
 		assertEquals(ConfigReader.getPropertyFrom(filename, "AppLoggerLogPattern"), "%d{dd/MMM/yyyy-HH:mm:ss.SSS} %-5p %c{1}:%L - %m%n");
 		
+		// test invalid partition
 		try{
 			ConfigReader.getPropertyFrom(filename, "helloworld");
 		} catch (NoSuchElementException e){}
@@ -131,6 +149,8 @@ public class TestConfigReader {
 		
 		Properties configFile = new Properties();
 		File file = new File(path);
+		
+		// test valid partition
 		try{
 			configFile.load(new FileInputStream(file));
 		} catch (IOException e){
@@ -139,6 +159,7 @@ public class TestConfigReader {
 		
 		assertTrue(configFile.equals(ConfigReader.getConfigProperty(path)));
 		
+		// test invalid partition
 		try{
 			ConfigReader.getConfigProperty("  ");
 			fail("Expected IllegalArgumentException");

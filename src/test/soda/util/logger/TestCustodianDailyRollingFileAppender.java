@@ -12,9 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import soda.util.logger.CustodianDailyRollingFileAppender;
 import soda.util.logger.SodaPatternLayout;
@@ -34,11 +32,6 @@ import soda.util.logger.SodaPatternLayout;
  *
  */
 public class TestCustodianDailyRollingFileAppender {
-
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
-	
-	
 	
 	@Test
 	public void testDefaultConstructorAndInhirited() {
@@ -55,23 +48,28 @@ public class TestCustodianDailyRollingFileAppender {
 		SodaPatternLayout ly = new SodaPatternLayout("header");
 		CustodianDailyRollingFileAppender cfa = new CustodianDailyRollingFileAppender(ly, "test.log", "dd/MMM/yyyy-HH:mm:ss.SSS");
 		
+		// test valid partition
 		assertTrue(cfa != null);
 		assertEquals(cfa.getFile(), "test.log");
 		assertEquals(cfa.getLayout().getClass().getName(),"soda.util.logger.SodaPatternLayout");
 		assertEquals(cfa.getClass().getSuperclass().getName(), "org.apache.log4j.FileAppender");
 		
-		// test null arguments		
-		exception.expect(NullPointerException.class);
-		new CustodianDailyRollingFileAppender(null, null, null);
+		// test invalid partition	
+		try{
+			new CustodianDailyRollingFileAppender(null, null, null);
+		} catch (NullPointerException e) {}
 
-		exception.expect(NullPointerException.class);
-		new CustodianDailyRollingFileAppender(ly, null, null);
+		try{
+			new CustodianDailyRollingFileAppender(ly, null, null);
+		} catch (NullPointerException e) {}
 
-		exception.expect(NullPointerException.class);
-		new CustodianDailyRollingFileAppender(null, "", null);
+		try{
+			new CustodianDailyRollingFileAppender(null, "", null);
+		} catch (NullPointerException e) {}
 
-		exception.expect(NullPointerException.class);
-		new CustodianDailyRollingFileAppender(null, null, "");
+		try{
+			new CustodianDailyRollingFileAppender(null, null, "");
+		} catch (NullPointerException e) {}
 		
 		// clean up after test
 		new File("test.log").delete();
@@ -86,14 +84,16 @@ public class TestCustodianDailyRollingFileAppender {
 		
 		// check before do test
 		assertEquals(cfa.getDatePattern(), "dd/MMM/yyyy-HH:mm");
+	
+		// test valid partition
+		cfa.setDatePattern("dd/MMM/yyyy-HH:mm:ss.SSS");
+		assertEquals("dd/MMM/yyyy-HH:mm:ss.SSS", cfa.getDatePattern());
 		
+		// test invalid partition
 		try{
 			cfa.setDatePattern(null);
 			fail("Expected IllegalArgumentException");
 		} catch (IllegalArgumentException e){ }
-	
-		cfa.setDatePattern("dd/MMM/yyyy-HH:mm:ss.SSS");
-		assertEquals("dd/MMM/yyyy-HH:mm:ss.SSS", cfa.getDatePattern());
 		
 		// clean up after test
 		new File("test.log").delete();
@@ -114,6 +114,7 @@ public class TestCustodianDailyRollingFileAppender {
 		String scfn = filename + sdf.format(new Date(file.lastModified()));
 		scfn = scfn.substring(0, scfn.indexOf("/")-2);
 		
+		// test valid partition
 		CustodianDailyRollingFileAppender cfa = new CustodianDailyRollingFileAppender(ly, filename, datePattern);
 		String expScfn = cfa.getScheduledFilename();
 		expScfn = expScfn.substring(0, expScfn.indexOf("/")-2);
@@ -136,6 +137,8 @@ public class TestCustodianDailyRollingFileAppender {
 		String datePattern = "dd/MMM/yyyy-HH:mm:ss.SSS";
 		String filename = "test.log";
 		CustodianDailyRollingFileAppender cfa = new CustodianDailyRollingFileAppender(ly, filename, datePattern);
+		
+		// test valid partition
 		
 		cfa.printPeriodicity(-1);
 		assertEquals(cfa.getDummyLog(), "Unknown periodicity for appender [null].");
@@ -171,6 +174,7 @@ public class TestCustodianDailyRollingFileAppender {
 		String filename = "test.log";
 		CustodianDailyRollingFileAppender cfa = new CustodianDailyRollingFileAppender(ly, filename, datePattern);
 		
+		// test valid partition
 		assertEquals(cfa.computeCheckPeriod(),0);
 		
 		// the branch of datePattern==null
@@ -197,7 +201,7 @@ public class TestCustodianDailyRollingFileAppender {
 		Date d = f.parse(""+now.getDate()+"/"+now.getMonth()+"/"+now.getYear()+"-"+now.getHours()+":"+now.getMinutes()+":"+now.getSeconds());
 		long nowMilSec = d.getTime();
 		
-		
+		// test valid partition
 		CustodianDailyRollingFileAppender cfa = new CustodianDailyRollingFileAppender(ly, filename, datePattern);
 		cfa.subAppend(null);
 		assertTrue(cfa.getNextCheck() > nowMilSec);
@@ -228,6 +232,7 @@ public class TestCustodianDailyRollingFileAppender {
 		CustodianDailyRollingFileAppender cfa = new CustodianDailyRollingFileAppender(ly, filename, datePattern);
 		cfa.zipGivenFile(file);
 		
+		// test valid partition
 		assertTrue(new File(filename+".zip").exists());
 		
 		// clean up after test
@@ -242,11 +247,7 @@ public class TestCustodianDailyRollingFileAppender {
 		CustodianDailyRollingFileAppender cfa = new CustodianDailyRollingFileAppender();
 		assertEquals(cfa.getCompressBackups(),"false");
 		
-		try{
-			cfa.setCompressBackups(null);
-			fail("Expected to through IllegalArgumentException");
-		} catch (IllegalArgumentException e){ }
-		
+		// test valid partition
 		cfa.setCompressBackups("true");
 		assertEquals(cfa.getCompressBackups(),"true");
 		
@@ -258,6 +259,12 @@ public class TestCustodianDailyRollingFileAppender {
 		
 		cfa.setCompressBackups("false");
 		assertEquals(cfa.getCompressBackups(),"false");
+		
+		// test invalid partition
+		try{
+			cfa.setCompressBackups(null);
+			fail("Expected to through IllegalArgumentException");
+		} catch (IllegalArgumentException e){ }
 	}
 	
 	
@@ -265,8 +272,20 @@ public class TestCustodianDailyRollingFileAppender {
 	@Test
 	public void testSetterGetterMaxNumberOfDays(){
 		CustodianDailyRollingFileAppender cfa = new CustodianDailyRollingFileAppender();
+				
+		// test valid partition
 		assertEquals(cfa.getMaxNumberOfDays(),"7");
 		
+		cfa.setMaxNumberOfDays("-99999");
+		assertEquals(cfa.getMaxNumberOfDays(),"7");
+		
+		cfa.setMaxNumberOfDays("9999");
+		assertEquals(cfa.getMaxNumberOfDays(),"9999");
+		
+		cfa.setMaxNumberOfDays("0");
+		assertEquals(cfa.getMaxNumberOfDays(),"0");
+		
+		// test invalid partition
 		try{
 			cfa.setMaxNumberOfDays("");
 			fail("Expected to through IllegalArgumentException");
@@ -281,14 +300,6 @@ public class TestCustodianDailyRollingFileAppender {
 			cfa.setMaxNumberOfDays(null);
 			fail("Expected to through IllegalArgumentException");
 		} catch (IllegalArgumentException e){ }
-		
-		cfa.setMaxNumberOfDays("-99999");
-		assertEquals(cfa.getMaxNumberOfDays(),"7");
-		
-		cfa.setMaxNumberOfDays("9999");
-		assertEquals(cfa.getMaxNumberOfDays(),"9999");
-		
-		cfa.setMaxNumberOfDays("0");
-		assertEquals(cfa.getMaxNumberOfDays(),"0");
+
 	}
 }

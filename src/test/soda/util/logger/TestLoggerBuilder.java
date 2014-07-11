@@ -34,11 +34,6 @@ import soda.util.logger.SodaPatternLayout;
  */
 public class TestLoggerBuilder {
 
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
-	
-	
-
 	@Test
 	public void testDefaultConstructor() {
 		LoggerBuilder lb = new LoggerBuilder();
@@ -51,52 +46,63 @@ public class TestLoggerBuilder {
 	
 	
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testSetterGetterOfAppender() throws IOException{
+		// test valid partition
 		LoggerBuilder lb = new LoggerBuilder();
 		lb.setAppender(new FileAppender(new HTMLLayout() , "test"));
 		assertEquals(lb.getAppender().getFile(), "test");
 		assertTrue(lb.getAppender().getLayout() instanceof HTMLLayout);
 	
-		exception.expect(IllegalArgumentException.class);
+		// test invalid partition
+		//test setting a null value
 		lb.setAppender(null);
 	}
 	
 	
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testSetLoggerName(){
+		// test valid partition
 		LoggerBuilder lb = new LoggerBuilder();
 		lb.setLoggerName("test");
 		assertEquals(lb.getAppender().getName(), "test");
-		
-		exception.expect(IllegalArgumentException.class);
+
+		// test invalid partition
+		// test setting a null value
 		lb.setLoggerName(null);
 	}
 	
 	
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testSetLoggerFile(){
+		// test valid partition
 		LoggerBuilder lb = new LoggerBuilder();
 		lb.setLoggerFile("test");
 		assertEquals(lb.getAppender().getFile(), "test");
 		
-		exception.expect(IllegalArgumentException.class);
+		// test invalid partition
+		// test setting a null value
 		lb.setLoggerFile(null);
 	}
 	
 	
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testImmediateFlush(){
+		// test valid partition
+		
+		// test boolean false
 		LoggerBuilder lb = new LoggerBuilder();
 		lb.setImmediateFlush(false);
 		assertFalse(lb.getAppender().getImmediateFlush());
 		
+		// test boolean true
 		lb.setImmediateFlush(true);
 		assertTrue(lb.getAppender().getImmediateFlush());
 		
+		// test all possible string value
 		lb.setImmediateFlush("true");
 		assertTrue(lb.getAppender().getImmediateFlush());
 		
@@ -111,12 +117,20 @@ public class TestLoggerBuilder {
 		
 		lb.setImmediateFlush("hello world");
 		assertFalse(lb.getAppender().getImmediateFlush());
+		
+		// test invalid partition
+		
+		// test setting a null value
+		lb.setImmediateFlush(null);
 	}
 	
 	
 	
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testAppend(){
+		// test valid partition
+		
+		// test boolean
 		LoggerBuilder lb = new LoggerBuilder();
 		lb.setAppend(false);
 		assertFalse(lb.getAppender().getAppend());
@@ -124,6 +138,7 @@ public class TestLoggerBuilder {
 		lb.setAppend(true);
 		assertTrue(lb.getAppender().getAppend());
 		
+		// test all possible strings
 		lb.setAppend("true");
 		assertTrue(lb.getAppender().getAppend());
 		
@@ -138,6 +153,10 @@ public class TestLoggerBuilder {
 		
 		lb.setAppend("hello world");
 		assertFalse(lb.getAppender().getAppend());
+		
+		// test invalid partition
+		// test setting a null value
+		lb.setAppend(null);
 	}
 	
 	
@@ -146,6 +165,7 @@ public class TestLoggerBuilder {
 	public void testSetMaxNumberOfDays(){
 		LoggerBuilder lb = new LoggerBuilder();
 		
+		// test valid partition
 		lb.setMaxNumberOfDays(-9999);
 		assertEquals(((CustodianDailyRollingFileAppender)lb.getAppender()).getMaxNumberOfDays(), "7");
 		
@@ -155,6 +175,7 @@ public class TestLoggerBuilder {
 		lb.setMaxNumberOfDays("13245");
 		assertEquals(((CustodianDailyRollingFileAppender)lb.getAppender()).getMaxNumberOfDays(), "13245");
 		
+		// test invalid partition
 		try{
 			lb.setMaxNumberOfDays(Integer.MAX_VALUE);
 			fail("Expected IllegalArgumentException");
@@ -183,6 +204,7 @@ public class TestLoggerBuilder {
 	public void testSetCompressBackups(){
 		LoggerBuilder lb = new LoggerBuilder();
 		
+		// test valid partition
 		lb.setCompressBackups(false);
 		assertEquals(((CustodianDailyRollingFileAppender)lb.getAppender()).getCompressBackups(), "false");
 		
@@ -192,6 +214,7 @@ public class TestLoggerBuilder {
 		lb.setCompressBackups("false");
 		assertEquals(((CustodianDailyRollingFileAppender)lb.getAppender()).getCompressBackups(), "false");
 		
+		// test invalid partition
 		try{
 			lb.setCompressBackups(null);
 			fail("Expected IllegalArgumentException");
@@ -210,12 +233,14 @@ public class TestLoggerBuilder {
 	public void testSetAppenderThreshold(){
 		LoggerBuilder lb = new LoggerBuilder();
 		
+		// test valid partition
 		lb.setAppenderThreshold("ERROR");
 		assertEquals(lb.getAppender().getThreshold().toString(), "ERROR");
 		
 		lb.setAppenderThreshold("hello world");
 		assertEquals(lb.getAppender().getThreshold().toString(), "DEBUG");
 		
+		// test invalid partition
 		lb.setAppenderThreshold(null);
 	}
 	
@@ -225,11 +250,13 @@ public class TestLoggerBuilder {
 	public void testSetLayoutPattern(){
 		LoggerBuilder lb = new LoggerBuilder();
 		
+		// test valid partition
 		lb.setLayoutPattern("helloPattern", "hello header");
 		SodaPatternLayout ly = (SodaPatternLayout) lb.getAppender().getLayout();
 		assertEquals(ly.getConversionPattern(), "helloPattern");
 		assertEquals(ly.getHeader(), "hello header\n");
 		
+		// test invalid partition
 		try{
 			lb.setLayoutPattern(null, "hello header");
 			fail("Expected IllegalArgumentException");
