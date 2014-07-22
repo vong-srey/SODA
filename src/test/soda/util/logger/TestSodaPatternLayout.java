@@ -44,7 +44,12 @@ public class TestSodaPatternLayout {
 		
 		// test non-empty string parameter
 		SodaPatternLayout pl3 = new SodaPatternLayout("hello");
-		assertEquals("hello\n", pl3.getHeader());
+		// windows adds an "\r" 
+		if(System.getProperty("os.name").contains("Windows")){
+			assertEquals("hello\r\n", pl3.getHeader());
+		} else {
+			assertEquals("hello\n", pl3.getHeader());
+		}
 		assertTrue(pl3 != null);
 		
 		// test large string (1000 chars in length) parameter
@@ -57,7 +62,12 @@ public class TestSodaPatternLayout {
 		}
 		
 		SodaPatternLayout pl4 = new SodaPatternLayout(header.toString());
-		assertEquals(header.toString().trim()+"\n", pl4.getHeader());
+		// windows adds an "\r" 
+		if(System.getProperty("os.name").contains("Windows")){
+			assertEquals(header.toString().trim()+"\r\n", pl4.getHeader());
+		} else {
+			assertEquals(header.toString().trim()+"\n", pl4.getHeader());
+		}
 		assertTrue(pl4 != null);
 		
 		
@@ -74,7 +84,12 @@ public class TestSodaPatternLayout {
 		
 		// test non-empty string parameter
 		pl.setHeader("hello world");
-		assertEquals("hello world\n", pl.getHeader());
+		// windows adds an "\r" 
+		if(System.getProperty("os.name").contains("Windows")){
+			assertEquals("hello world\r\n", pl.getHeader());
+		} else {
+			assertEquals("hello world\n", pl.getHeader());		
+		}
 		assertTrue(pl.getHeader().endsWith(System.getProperty("line.separator")));
 		
 		// test large string (1000 chars in length) parameter
@@ -86,7 +101,12 @@ public class TestSodaPatternLayout {
 			header.append(c);
 		}
 		pl.setHeader(header.toString());
-		assertEquals(header.toString().trim()+"\n", pl.getHeader());
+		// windows adds an "\r" 
+		if(System.getProperty("os.name").contains("Windows")){
+			assertEquals(header.toString().trim()+"\r\n", pl.getHeader());
+		} else {
+			assertEquals(header.toString().trim()+"\n", pl.getHeader());
+		}
 		assertTrue(pl.getHeader().endsWith(System.getProperty("line.separator")));
 		
 		// test empty string

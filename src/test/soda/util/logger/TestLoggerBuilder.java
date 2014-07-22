@@ -254,7 +254,12 @@ public class TestLoggerBuilder {
 		lb.setLayoutPattern("helloPattern", "hello header");
 		SodaPatternLayout ly = (SodaPatternLayout) lb.getAppender().getLayout();
 		assertEquals(ly.getConversionPattern(), "helloPattern");
-		assertEquals(ly.getHeader(), "hello header\n");
+		// windows at an "\r" 
+		if(System.getProperty("os.name").contains("Windows")){
+			assertEquals(ly.getHeader(), "hello header\r\n");
+		} else {
+			assertEquals(ly.getHeader(), "hello header\n");
+		}
 		
 		// test invalid partition
 		try{

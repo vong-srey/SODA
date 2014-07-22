@@ -53,47 +53,55 @@ public class DFCollector extends CollectorTool{
 
 		Map<String, String> performance = new LinkedHashMap<String, String>();
 		
-		// check whether this volume can be accessed or not (if it is a NFS FileSystem)
-		if (fs instanceof NfsFileSystem) {
-			NfsFileSystem nfs = (NfsFileSystem) fs;
-			// if nfs can't reply the ping, means this nfs drive can't be accessed.
-			// we are not concerning about this drive anyway. => return empty map
-			if (!nfs.ping()) {
-				LoggerBuilder.getAppLogger().error(this.getClass() + ": " + nfs.getUnreachableMessage());
-				return performance;
+		try{
+			// check whether this volume can be accessed or not (if it is a NFS FileSystem)
+			if (fs instanceof NfsFileSystem) {
+				NfsFileSystem nfs = (NfsFileSystem) fs;
+				// if nfs can't reply the ping, means this nfs drive can't be accessed.
+				// we are not concerning about this drive anyway. => return empty map
+				if (!nfs.ping()) {
+					LoggerBuilder.getAppLogger().error(this.getClass() + ": " + nfs.getUnreachableMessage());
+					return performance;
+				}
 			}
+			
+			// get the volume object
+			FileSystemUsage volume = sigar.getFileSystemUsage(fs.getDirName());
+			
+			// get the volume name
+			String name = fs.getDevName();
+			// get the last text from "/"
+			// e.g. /root/vol-s00  =>  we use only vol-s00
+			name = name.substring(name.lastIndexOf("/") + 1);
+			name = name.replaceAll("\\W", ""); //remove all non-word (word: [a-zA-Z0-9]) chars
+			
+			performance.put(DEVICE_NAME, "DF-Df_"+name);
+			
+			/* ***********************************************************************************
+			 * Appending the log data into the strBuilder.
+			 * If you are modifying the order or log data, you also need to modify the logHeader
+			 * in setupLogHeader() method 
+			 * ***********************************************************************************/
+			strBuilder.setLength(0);
+			
+			// getTotal() and getFree() and getAvail() are producing MB result
+			strBuilder.append(volume.getTotal());
+			strBuilder.append(" ");
+			
+			long temp = volume.getTotal() - volume.getFree();
+			strBuilder.append(temp);
+			strBuilder.append(" ");
+			
+			strBuilder.append(volume.getAvail());
+			strBuilder.append(" ");
+			
+			strBuilder.append(getOneDecPerc(volume.getUsePercent() ));
+		
+		} catch (SigarException e){ //mostly occure in Windows when the Drive is not available
+			// if device is not available
+			// then return an empty map
+			return new LinkedHashMap<String, String>();
 		}
-		
-		FileSystemUsage volume = sigar.getFileSystemUsage(fs.getDirName());
-		
-		// get the volume name
-		String name = fs.getDevName();
-		// get the last text from "/"
-		// e.g. /root/vol-s00  =>  we use only vol-s00
-		name = name.substring(name.lastIndexOf("/") + 1);
-		name = name.replaceAll("\\W", ""); //remove all non-word (word: [a-zA-Z0-9]) chars
-		
-		performance.put(DEVICE_NAME, "DF-Df_"+name);
-		
-		/* ***********************************************************************************
-		 * Appending the log data into the strBuilder.
-		 * If you are modifying the order or log data, you also need to modify the logHeader
-		 * in setupLogHeader() method 
-		 * ***********************************************************************************/
-		strBuilder.setLength(0);
-		
-		// getTotal() and getFree() and getAvail() are producing MB result
-		strBuilder.append(volume.getTotal());
-		strBuilder.append(" ");
-		
-		long temp = volume.getTotal() - volume.getFree();
-		strBuilder.append(temp);
-		strBuilder.append(" ");
-		
-		strBuilder.append(volume.getAvail());
-		strBuilder.append(" ");
-		
-		strBuilder.append(getOneDecPerc(volume.getUsePercent() ));
 		
 		performance.put(VALUE, strBuilder.toString());
 		
