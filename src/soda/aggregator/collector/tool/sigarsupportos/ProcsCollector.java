@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -43,7 +44,7 @@ import soda.util.logger.LoggerBuilder;
  */
 public class ProcsCollector extends CollectorTool{
 
-	protected List<String> pids;
+	protected Set<String> pids;
 	protected Map<String, String> pidsNames;
 	
 	/**
@@ -245,7 +246,13 @@ public class ProcsCollector extends CollectorTool{
 	private void setupPIDsListFromDefaultConfigFile(){
 		// if you changed the property in the config file, please double check the key "ProcsCollectorPIDsList"
 		String pidsString = ConfigReader.getProperty("ProcsCollectorPIDsList");
-		pids = new ArrayList<String>(Arrays.asList(pidsString.split(",")));
+		List<String> temp = new ArrayList<String>(Arrays.asList(pidsString.split(",")));
+		pids = new HashSet<String>();
+		for(String s : temp){
+			if(s.trim().isEmpty()) continue;
+			pids.add(s.trim());
+		}
+		
 		pidsNames = new HashMap<String, String>();
 		
 		List<String> invalidPids = new ArrayList<String>();

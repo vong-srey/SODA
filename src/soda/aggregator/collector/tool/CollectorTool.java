@@ -51,15 +51,15 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	/**
 	 * used as a map's key
 	 */
-	protected final String DEVICE_NAME = "deviceName";
+	protected static final String DEVICE_NAME = "deviceName";
 	/**
 	 * used as a map's key
 	 */
-	protected final String DESCRIPTION = "description";
+	protected static final String DESCRIPTION = "description";
 	/**
 	 * used as a map's key
 	 */
-	protected final String VALUE = "value";
+	protected static final String VALUE = "value";
 	
 	
 	
@@ -103,6 +103,13 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 * Sigar object that help to get all the hardware and OS performances
 	 */
 	protected Sigar sigar = new Sigar();
+	
+	
+	
+	/**
+	 * a frequency that an event should be logged
+	 */
+	private int logFrequency = 1000;  // default value
 	
 	
 	
@@ -229,9 +236,7 @@ public abstract class CollectorTool extends Thread implements Serializable{
 	 * the run() method invoked when this thread is strated.
 	 */
 	@Override
-	public void run() {
-		int logFrequency = Integer.parseInt(ConfigReader.getProperty(ConfigKeysValues.LOG_FREQUENCY));
-		
+	public void run() {	
 		// while the flag stopCollection is false, keep collecting and logging the perfromance
 		while(!stopCollection.get()){
 			try {
@@ -254,6 +259,18 @@ public abstract class CollectorTool extends Thread implements Serializable{
 		}
 	}
 	
+	
+	
+	/**
+	 * set the frequency that an event should be logged. if the setting process is unsuccessful, the program keeps the default value
+	 */
+	public void setLogFrequencyFromDefaultConfigFile(){
+		try {
+			logFrequency = Integer.parseInt(ConfigReader.getProperty(ConfigKeysValues.LOG_FREQUENCY));
+		} catch (NumberFormatException e){
+			appLogger.error("Log frequency configuration is not correct.");
+		}
+	}
 	
 	
 

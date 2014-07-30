@@ -48,6 +48,10 @@ public class Aggregator {
 		collectors = CollectorFactoryManager.getAllCollectors(collectorFactory);
 		
 		for(CollectorTool ct : collectors){
+			ct.setLogFrequencyFromDefaultConfigFile();
+		}
+		
+		for(CollectorTool ct : collectors){
 			ct.start();
 		}	
 	}
