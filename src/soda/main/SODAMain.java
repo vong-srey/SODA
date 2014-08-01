@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hyperic.sigar.SigarException;
+import org.json.JSONException;
 
 import soda.aggregator.core.Aggregator;
+import soda.observer.core.Observer;
 import soda.util.config.ConfigReader;
 import soda.util.logger.LoggerBuilder;
 
@@ -35,10 +37,35 @@ public class SODAMain{
 		// 2). config the appLogger
 		LoggerBuilder.setAppenderForAppLoggerFromDefaultConfigFile();
 		
+
+		// 3). read the flags and instantiate Aggreagtor or/and Observer accordingly
+		boolean runAggregator = true;
+		boolean runObserver = true;
+		if(argsList.indexOf("-a") >= 0){
+			runObserver = false;
+		}
+		if(argsList.indexOf("-o") >= 0){
+			runAggregator = false;
+		}
 		
+		// Instantiate aggregator and start collecting and logging machine performance.
+		// if the program is run with "-a" flag or no-flag is specified
+		if(runAggregator){
+			Aggregator aggregator = new Aggregator();
+			aggregator.runAggregation();
+		}
 		
-		// 3). Instantiate aggregator and start collecting and logging machine performance.
-		Aggregator aggregator = new Aggregator();
-		aggregator.runAggregation();
+		// Instantiate observer and start its process
+		// if the program is run with "-o" flag or no-flag is specified
+		if(runObserver){
+			Observer observer = new Observer();
+			try {
+				observer.setupObserver();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			observer.observe();
+		}
 	}
 }
