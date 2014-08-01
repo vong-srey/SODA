@@ -140,8 +140,7 @@
 		var validOperators = ["lte", "lt", "gte", "gt"]; // use to validate the operator given by user
 		
 		if(isEmpty(str)){
-			alert("Query cannot be an empty string");
-			return false;
+			return true;
 		}
 		
 		try {

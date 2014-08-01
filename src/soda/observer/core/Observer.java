@@ -44,7 +44,7 @@ public class Observer extends Thread{
 	public void run(){
 		while(!stopObserving.get()){
 			try {
-				Thread.sleep(obsvrFrqc);
+				Thread.sleep(5000);
 //				Thread.sleep(obsvrFrqc * 1000); //obsvrFrqc is in seconds => multiply to get milliseconds
 				try{
 					queryReader.readQuery(queryFile);
