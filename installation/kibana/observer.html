@@ -45,22 +45,29 @@
 			type: 'POST',
 			data: qr,
 			success: function(dt){
+				if(typeof dt.hits.hits[0] == 'undefined'){
+					return;
+				}
 				// get the value from the result (as json object) and update the input boxes
 				// update email box
-				var email = dt.hits.hits[0]._source.email;
-				document.getElementById('receiverEmail').value = email;
-				
-				var observedQuery = dt.hits.hits[0]._source.observedquery;
-				// because json database doesn't accept any value that contain double-quotes (").
-				// so, we have replaced all double-quote with the @$ before indexing the data into elasticsearch
-				// so, when we get the data from elasticsearch we need to replace all these @$ with double-quote
-				while(true){
-					var temp = observedQuery.replace('@$', '"');
-					if(temp==observedQuery) break;
-					observedQuery = temp;
+				if(typeof dt.hits.hits[0]._source.email != 'undefined'){
+					var email = dt.hits.hits[0]._source.email;
+					document.getElementById('receiverEmail').value = email;
 				}
+				
 				// update query box
-				document.getElementById('obsQuery').value = observedQuery;
+				if(typeof dt.hits.hits[0]._source.observedquery != 'undefined'){
+					var observedQuery = dt.hits.hits[0]._source.observedquery;
+					// because json database doesn't accept any value that contain double-quotes (").
+					// so, we have replaced all double-quote with the @$ before indexing the data into elasticsearch
+					// so, when we get the data from elasticsearch we need to replace all these @$ with double-quote
+					while(true){
+						var temp = observedQuery.replace('@$', '"');
+						if(temp==observedQuery) break;
+						observedQuery = temp;
+					}
+					document.getElementById('obsQuery').value = observedQuery;
+				}
 			}
 		});
 	}
@@ -132,7 +139,10 @@
 	function isJsonStringValid(str) {
 		var validOperators = ["lte", "lt", "gte", "gt"]; // use to validate the operator given by user
 		
-		if(isEmpty(str)) return false;
+		if(isEmpty(str)){
+			alert("Query cannot be an empty string");
+			return false;
+		}
 		
 		try {
 			var js = JSON.parse(str); //if str is syntax incorrect it will throw an exception => str isnot a valid json string
@@ -199,7 +209,10 @@
 	* this method adapted from: http://www.w3schools.com/js/js_form_validation.asp
 	*/
 	function isEmailAddValid(email){
-		if(isEmpty(email)) return false;
+		if(isEmpty(email)){
+			alert("Email cannot be an empty string");
+			return false;
+		}
 		
 		var atpos = email.indexOf("@");
 		var dotpos = email.lastIndexOf(".");
@@ -258,16 +271,34 @@
 
 	<div class="panel nospace ng-scope ng-pristine ng-valid ui-droppable ui-resizable" style="position: relative; width: 100%; color:white" >
 
-		<div class="panel-container ng-scope" style="height: 5em"><div class"ng-scope">
-			<div class="panel-text panel-title" style="position: relative; height: 3em"> QUERY TO BE OBSERVED: </div>
-			<div><input class="search-query panel-query ng-pristine ng-valid  has-remove pull-right" type="text" style="position: relative; width: 80%; " id="obsQuery"></input></div>
-		</div></div>
+		<div class="panel-container ng-scope" style="overflow:auto">
+			<div class"ng-scope">
+				<div class="panel-text panel-title" style="position: relative; height: 3em"> QUERY TO BE OBSERVED: </div>
+				<div><input class="search-query panel-query ng-pristine ng-valid  has-remove pull-right" type="text" style="position: relative; width: 80%; " id="obsQuery"></input></div>
+			</div>
+
+			<div class="pull-right">
+				<p style="height:1em"></p>
+				<p>The query must be expressed in JSON string that contains an "OR" predicate of many "AND" prediates.</p>
+				<p>Example: this condition (CPU-Idle <= 90% AND CPU-IRQ > 3) OR Disk-R_in > 80 MB/sec.</p>
+				<p>Is expressed as: {"OR":[{"AND":[{"type":"Idle","value":90,"operator":"lte"},{"type":"IRQ","operator":"gt","value":3}]},{"AND":[{"type":"R_in","operator":"gt","value":80}]}]}</p>
+				<p><b>Note:</b> "operator" key can contains only these 4 values: "lte", "lt", "gte", "gt" </p>
+			</div>
+		</div>
 
 
-		<div class="panel-container ng-scope" style="height:5em"> <div class"ng-scope">
-			<div class="panel-title" style="position: relative; height: 3em">Inform the issue to:</div>
-			<div><input class="search-query panel-query ng-pristine ng-valid  has-remove pull-right" type="text" style="position: relative; width: 80%;" id="receiverEmail"></input></div>
-		</div></div>
+		<div class="panel-container ng-scope" style="overflow:auto"> 
+			<div class"ng-scope">
+				<div class="panel-title" style="position: relative; height: 3em">Inform the issue to:</div>
+				<div><input class="search-query panel-query ng-pristine ng-valid  has-remove pull-right" type="text" style="position: relative; width: 80%;" id="receiverEmail"></input></div>
+			</div>
+
+			<div class="pull-right">
+				<p style="height:1em"></p>
+				<p>Please type in an email address of the person who the alert will be sent to.</p>
+				<p style="visibility:hidden">Is expressed as: {"OR":[{"AND":[{"type":"Idle","value":90,"operator":"lte"},{"type":"IRQ","operator":"gt","value":3}]},{"AND":[{"type":"R_in","operator":"gt","value":80}]}]}</p>
+			</div>
+		</div>
 
 	</div>
 
