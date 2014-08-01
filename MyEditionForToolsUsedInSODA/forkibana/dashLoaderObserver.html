@@ -1,0 +1,13 @@
+
+<style>.noarrow>a:after {
+    display: none !important;
+  }
+
+.icon-observer {
+	background-image: url("./search.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+</style>
+
+<li ng-if="dashboard.current.loader.show_home !== false"><a bs-tooltip="'Goto saved default'" data-placement="bottom" href="./"><i class="icon-home"></i></a></li>

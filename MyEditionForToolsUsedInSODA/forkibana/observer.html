@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]>
+<!-->
+<html class="no-js" style="height: 100%">
+<!--<![endif]-->
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width">
+	<title>Observer</title>
+
+	<!-- required css files-->
+	<link rel="stylesheet" href="css/bootstrap.light.min.css" title="Light">
+	<link rel="stylesheet" href="css/timepicker.css">
+	<link rel="stylesheet" href="css/animate.min.css">
+	<link rel="stylesheet" href="css/normalize.min.css">
+	
+	<!-- required javascript files-->
+	<script src="vendor/require/require.js"></script>
+	<script src="app/components/require.config.js"></script>
+	<script src="app/components/require.config.js"></script>
+	<script>require(['app'], function () {})</script>
+	<script src="jquery.js"></script>
+
+	<script>
+	/*
+	* script to update the input boxes based on the previous value stored in elasticsearch
+	*/
+	function searchForStoredObserver(){
+		var qr='{"query":{"match":{"_type":"observer"}}}';
+		
+		var url = elasticsearchServer + "/_search";
+		//e.g. qr = '{"query":{"match":{"_type":"observer"}}}';
+		
+		// send a POST request to elasticsearch server
+		var jqxhr = $.ajax({
+			url: url,
+			type: 'POST',
+			data: qr,
+			success: function(dt){
+				// get the value from the result (as json object) and update the input boxes
+				// update email box
+				var email = dt.hits.hits[0]._source.email;
+				document.getElementById('receiverEmail').value = email;
+				
+				var observedQuery = dt.hits.hits[0]._source.observedquery;
+				// because json database doesn't accept any value that contain double-quotes (").
+				// so, we have replaced all double-quote with the @$ before indexing the data into elasticsearch
+				// so, when we get the data from elasticsearch we need to replace all these @$ with double-quote
+				while(true){
+					var temp = observedQuery.replace('@$', '"');
+					if(temp==observedQuery) break;
+					observedQuery = temp;
+				}
+				// update query box
+				document.getElementById('obsQuery').value = observedQuery;
+			}
+		});
+	}
+
+
+
+	/**
+	* Get the query and email address from the input box and store into elasticsearch server
+	*/
+	function saveQueryAndEmail(){
+		// get the value from input boxes
+		var givenQr = document.getElementById('obsQuery').value;
+		var email = document.getElementById('receiverEmail').value;
+
+		if( isJsonStringValid(givenQr)){ //validate given json string query
+			if(isEmailAddValid(email)){  //validate given email address
+				// because json database doesn't accept any value that contain double-quotes (").
+				// so, replace all double-quote with the @$
+				var storedQr = givenQr.replace(new RegExp('"', 'g'), '@$');
+				createIndexElasticsearch(storedQr, email);
+			}
+		}
+	}
+
+
+
+	/**
+	* create/update the kibana-int index with the givenQr and email
+	*/
+	function createIndexElasticsearch(givenQr, email){
+		// elasticsearch server url + kibana-int index url
+		var url = elasticsearchServer + "/kibana-int/observer/1";
+		//e.g. qrCnt = '{"observedquery":"myquery", "email":"myemail"}';
+		var qrCnt = '{"observedquery":"'+givenQr+'","email":"'+email+'"}';
+
+		// send a PUT request to elasticsearch server
+		var jqxhr = $.ajax({
+			url: url,
+			type: 'PUT',
+			data: qrCnt,
+			success: function(dt){
+				alert("Your criteria is saved. I will monitor your servers agains this criteria.");
+			}
+		});
+	}
+
+	
+
+	/**
+	* this method intentionally leave it here for future learning.
+	* this is an example of how to convert a josn string to json object and vice versa
+	*/
+	function convertTextToJsonAndConvertJsonToString(){
+		var text = '{"query":{ "match_all":{} }}';
+		if( isJsonStringValid(text) ){
+			alert('this is: true');
+			var js = JSON.parse(text); // convert string to json
+			alert(JSON.stringify(js)); // convert json to string
+		} else {
+			alert('this is: false');
+		}
+	}
+	
+	
+	
+	/**
+	* validate the input query json that written by user.
+	*/
+	function isJsonStringValid(str) {
+		var validOperators = ["lte", "lt", "gte", "gt"]; // use to validate the operator given by user
+		
+		if(isEmpty(str)) return false;
+		
+		try {
+			var js = JSON.parse(str); //if str is syntax incorrect it will throw an exception => str isnot a valid json string
+
+			if(typeof js.OR == 'undefined'){ // validate the first level OR
+				alert('The first level of your predicate must be an "OR" predicate.');
+				return false;
+				
+			} else { 
+				// validate second level (array of predicates of OR)
+				for(var i=0; i<js.OR.length; i++){
+					// each element of OR predicates array must be an "AND"
+					if(typeof js.OR[i].AND == 'undefined'){
+						alert('The predicate number ' + (i+1) + ' on second level must be an "AND" predicate.');
+						return false;
+					}
+
+					// validate third level (array of 3-type-predicates of AND predicates array of OR predicates array)
+					// the 3-type-predicate contains:  1). 'type' key that has string value.  2). 'operator' key that has string value (limit to only 'gte', 'gt', 'lte', 'lt').  3). 'value' key that has number value
+					for(var j=0; j<js.OR[i].AND.length; j++){
+						var msg = 'The third level predicate number ' + (j+1) + ' that belongs to second level predicate number ' + (i+1) + ':\n';
+						var invalidJS = false;
+						// if 'type' doesn't exist or its value is not a string
+						if($.type(js.OR[i].AND[j].type) !== "string"){
+							msg += "     Doesn't contain 'type' key or it's value is not a 'string';\n";
+							invalidJS = true;
+						}
+						// if 'operator' doesn't exist or its value is not a string
+						if($.type(js.OR[i].AND[j].operator) !== "string"){
+							msg += "     Doesn't contain 'operator' key or it's value is not a 'string';\n";
+							invalidJS = true;
+						} else {
+							// if 'type' exist and its value is a string, but it is not either: ['lte', 'lt', 'gte', 'gt']
+							if(validOperators.indexOf(js.OR[i].AND[j].operator) < 0){
+								msg += "     The operator is neither 'lte', nor 'lt', nor 'gte', nor 'gt';\n";
+								invalidJS = true;
+							}
+						}
+						// if 'value' doesn't exist or its value is not a number
+						if($.type(js.OR[i].AND[j].value) !== "number"){
+							msg += "     Doesn't contain 'value' key or it's value is not a 'number';\n";
+							invalidJS = true;
+						}
+
+						if(invalidJS){
+							alert(msg);
+							return false;
+						}    
+					}
+
+				}
+			}
+		} catch (e) {
+			alert(e);
+			return false;
+		}
+		return true;
+	}
+	
+	
+	
+	/**
+	* validate if the given email is a valid email address
+	* this method adapted from: http://www.w3schools.com/js/js_form_validation.asp
+	*/
+	function isEmailAddValid(email){
+		if(isEmpty(email)) return false;
+		
+		var atpos = email.indexOf("@");
+		var dotpos = email.lastIndexOf(".");
+		if (atpos< 1 || dotpos<atpos+2 || dotpos+2>=email.length) {
+			alert("Your email address is not correct.");
+			return false;
+		}
+		return true;
+	}
+	
+	
+	
+	/**
+	* a helper method to validate if the given string is an empty string
+	*/
+	function isEmpty(str){
+		return (!str || str.length===0);
+	}
+
+	</script>
+
+	<style>
+	</style>
+</head>
+
+<body style="height: 100%" onload="searchForStoredObserver();">
+	<noscript>
+		<div class="container"><center><h3>You must enable javascript to use Kibana</h3></center>
+		</div>
+	</noscript>
+
+	<link rel="stylesheet" ng-href="css/bootstrap.{{dashboard.current.style||'dark'}}.min.css">
+	<link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+
+	<div ng-cloak="" ng-repeat="alert in dashAlerts.list" class="alert-{{alert.severity}} dashboard-notice" ng-show="$last"><button type="button" class="close" ng-click="dashAlerts.clear(alert)" style="padding-right:50px">&times;</button> <strong>{{alert.title}}</strong> 
+
+		<span ng-bind-html="alert.text"></span>
+
+		<div style="padding-right:10px" class="pull-right small">{{$index + 1}} alert(s)</div>
+	</div>
+
+	<div ng-cloak="" class="navbar navbar-static-top">
+
+		<div class="navbar-inner">
+
+			<div class="container-fluid">
+
+				<span class="brand"><img src="img/small.png" bs-tooltip="'Kibana '+(kbnVersion=='@REV@'?'master':kbnVersion)" data-placement="bottom"> Observer
+				</span>
+				<ul class="nav pull-right" ng-controller="dashLoader" ng-init="init()" ng-include="'app/partials/dashLoaderObserver.html'">
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel nospace ng-scope ng-pristine ng-valid ui-droppable ui-resizable" style="position: relative; width: 100%; color:white" >
+
+		<div class="panel-container ng-scope" style="height: 5em"><div class"ng-scope">
+			<div class="panel-text panel-title" style="position: relative; height: 3em"> QUERY TO BE OBSERVED: </div>
+			<div><input class="search-query panel-query ng-pristine ng-valid  has-remove pull-right" type="text" style="position: relative; width: 80%; " id="obsQuery"></input></div>
+		</div></div>
+
+
+		<div class="panel-container ng-scope" style="height:5em"> <div class"ng-scope">
+			<div class="panel-title" style="position: relative; height: 3em">Inform the issue to:</div>
+			<div><input class="search-query panel-query ng-pristine ng-valid  has-remove pull-right" type="text" style="position: relative; width: 80%;" id="receiverEmail"></input></div>
+		</div></div>
+
+	</div>
+
+	<div class="modal-footer">
+		<button class="btn btn-success pull-right" onclick="saveQueryAndEmail()">Save</button>
+	</div>
+
+</body>
+</html>
