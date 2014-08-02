@@ -59,13 +59,9 @@
 				if(typeof dt.hits.hits[0]._source.observedquery != 'undefined'){
 					var observedQuery = dt.hits.hits[0]._source.observedquery;
 					// because json database doesn't accept any value that contain double-quotes (").
-					// so, we have replaced all double-quote with the @$ before indexing the data into elasticsearch
-					// so, when we get the data from elasticsearch we need to replace all these @$ with double-quote
-					while(true){
-						var temp = observedQuery.replace('@$', '"');
-						if(temp==observedQuery) break;
-						observedQuery = temp;
-					}
+					// so, we have replaced all double-quote with the @% before indexing the data into elasticsearch
+					// so, when we get the data from elasticsearch we need to replace all these @% with double-quote
+					observedQuery = observedQuery.replace(new RegExp('@%', 'g'), '"');
 					document.getElementById('obsQuery').value = observedQuery;
 				}
 			}
@@ -85,8 +81,8 @@
 		if( isJsonStringValid(givenQr)){ //validate given json string query
 			if(isEmailAddValid(email)){  //validate given email address
 				// because json database doesn't accept any value that contain double-quotes (").
-				// so, replace all double-quote with the @$
-				var storedQr = givenQr.replace(new RegExp('"', 'g'), '@$');
+				// so, replace all double-quote with the @%
+				var storedQr = givenQr.replace(new RegExp('"', 'g'), '@%');
 				createIndexElasticsearch(storedQr, email);
 			}
 		}
@@ -140,8 +136,7 @@
 		var validOperators = ["lte", "lt", "gte", "gt"]; // use to validate the operator given by user
 		
 		if(isEmpty(str)){
-			alert("Query cannot be an empty string");
-			return false;
+			return true;
 		}
 		
 		try {
