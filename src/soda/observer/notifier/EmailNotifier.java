@@ -1,5 +1,6 @@
 package soda.observer.notifier;
 
+import java.util.NoSuchElementException;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -67,28 +68,36 @@ public class EmailNotifier extends Notifier{
 	public void sendNotification(final String msg) {
 		appLogger.info("About to send an alert email to the administrator");
 		
-		/**
-		 * this if block for testing purpose only. once deploy need to remove this block
-		 */
-		if(true){
-			System.out.println(msg);
-			return;
-		}
-		
 		if(msg==null || msg.trim().isEmpty()){
 			throw new IllegalArgumentException();
 		}
 		
 		// Sender's email
-		String from = ConfigReader.getProperty("FromAddress");
+		String from = "";
+		try {
+			from = ConfigReader.getProperty("FromAddress");
+		} catch (NoSuchElementException e){
+			from = "css@orionhealth.com"; //default value 
+		}
 
 		// message body
-		String alertBody = ConfigReader.getProperty("AlertBody");
-		String alertSig = ConfigReader.getProperty("AlertSignature");
-		String content = alertBody + msg + alertSig;
+		String content = msg;
+		try {
+			String alertBody = ConfigReader.getProperty("AlertBody");
+			String alertSig = ConfigReader.getProperty("AlertSignature");
+			content = alertBody + msg + alertSig;
+		} catch (NoSuchElementException e){
+			content = msg;
+		}
 
 		// configuring smtp mail server
-		String host = ConfigReader.getProperty("SMTPHost");
+		String host = "";
+		try {
+			ConfigReader.getProperty("SMTPHost");
+		} catch (NoSuchElementException e){
+			host = "zimbra"; //default value
+		}
+		
 		Properties prop = System.getProperties();
 		prop.put("mail.smtp.host", host); // Setup mail server
 
@@ -103,8 +112,12 @@ public class EmailNotifier extends Notifier{
 			// Set To: header field of the header.
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
 					contact));
-			// Set Subject: header field
-			message.setSubject(ConfigReader.getProperty("AlertEmailSubject"));
+			try {
+			// 	Set Subject: header field
+				message.setSubject(ConfigReader.getProperty("AlertEmailSubject"));
+			} catch (NoSuchElementException e){
+				message.setSubject("This is an alert from your server!"); //default value
+			}
 			// Now set the actual message
 			message.setText(content);
 

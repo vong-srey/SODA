@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hyperic.sigar.SigarException;
-import org.json.JSONException;
 
 import soda.aggregator.core.Aggregator;
 import soda.observer.core.Observer;
@@ -59,12 +58,7 @@ public class SODAMain{
 		// if the program is run with "-o" flag or no-flag is specified
 		if(runObserver){
 			Observer observer = new Observer();
-			try {
-				observer.setupObserver();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			observer.setupObserver();
 			observer.observe();
 		}
 	}

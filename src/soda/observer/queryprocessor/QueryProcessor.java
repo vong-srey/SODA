@@ -1,12 +1,5 @@
 package soda.observer.queryprocessor;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,11 +24,6 @@ import soda.util.logger.LoggerBuilder;
  *
  */
 public class QueryProcessor {
-	
-	/**
-	 * url of the elasticsearch server
-	 */
-	private String elsSrchUrl = "http://localhost:9200/_search"; //default value of elasticsearch Search URL
 	
 	
 	
@@ -71,16 +59,6 @@ public class QueryProcessor {
 	 * used to log this SODA program's performances.
 	 */
 	private Logger appLogger = LoggerBuilder.getAppLogger();
-	
-	
-	
-	/**
-	 * setter for elsSrchUrl
-	 * @param newElsSrchUrl : new url of the elasticsearch server
-	 */
-	public void setElasticsearchSearchURL(String newElsSrchUrl){
-		elsSrchUrl = newElsSrchUrl;
-	}
 
 	
 	
@@ -159,7 +137,7 @@ public class QueryProcessor {
 				// iterate each and query
 				for(int j=0; j<andQrArrJs.length(); j++){
 					JSONObject jsQr = andQrArrJs.getJSONObject(j);
-					Map<String, String> rslt = searchElasticsearchAt(elsSrchUrl, jsQr, frqncyInSec);
+					Map<String, String> rslt = searchElasticsearchAt(QueryReader.getElasticsearchSearchURL(), jsQr, frqncyInSec);
 					
 					// and query means all the sub-queries have to be true.
 					// if there is one query is false => break, we don't need to check other queries
@@ -208,8 +186,10 @@ public class QueryProcessor {
 		if (urlParameters == null || urlParameters.trim().isEmpty()) return srchRslts;
 
 		// e.g of the rspStr = {"_shards":{"total":35,"failed":0,"successful":35},"hits":{"hits":[{"_index":"logstash-2014.07.29","_type":"Idle","_source":{"@timestamp":"2014-07-29T22:36:00.668Z","dev":"CPUs","host":"localhost.localdomain","type":"Idle","value":85.2},"_id":"6DeFlaE3RFGWK7P8VAQT8w","_score":2.609438},{"_index":"logstash-2014.07.29","_type":"Idle","_source":{"@timestamp":"2014-07-29T22:58:00.668Z","dev":"CPUs","host":"localhost.localdomain","type":"Idle","value":85.2},"_id":"z6pLbZb8SLyGa7oEwMeslQ","_score":2.252763},{"_index":"logstash-2014.07.29","_type":"Idle","_source":{"@timestamp":"2014-07-29T20:36:00.668Z","dev":"CPUs","host":"localhost.localdomain","type":"Idle","value":85.2},"_id":"JCEKP5BxRgSdpHcbbjTNGg","_score":2.098612},{"_index":"logstash-2014.07.29","_type":"Idle","_source":{"@timestamp":"2014-07-29T20:47:30.668Z","dev":"CPUs","host":"localhost.localdomain","type":"Idle","value":85.2},"_id":"aEs7VVQUT8effkjUFuz88g","_score":1.4054651}],"total":4,"max_score":2.609438},"took":8,"timed_out":false}
-		String rspStr = getResponseFromUrl(urlStr, urlParameters);
+		String rspStr = QueryReader.searchElasticsearchWith(urlStr, urlParameters, "POST");
 		if (rspStr == null || rspStr.trim().isEmpty()) return srchRslts;
+//		debug
+//		System.out.println(urlParameters + "\n" + rspStr);
 		
 		// process the result "rspStr" into a map that can be understood.
 		try{
@@ -236,62 +216,7 @@ public class QueryProcessor {
 	
 	
 	
-	/**
-	 * Send a POST request to the given urlStr with the data in urlParameters.
-	 * This code has been adapted from: from:http://www.xyzws.com/Javafaq/how-to-use-httpurlconnection-post-data-to-web-server/139 This block of code
-	 * @param urlStr : url of the server that will be sent a POST request to
-	 * @param urlParameters : data that will be attached with the POST request
-	 * @return the string of the response from the server
-	 */
-	public String getResponseFromUrl(String urlStr, String urlParameters){
-		
-		if(urlStr==null || urlStr.trim().isEmpty() || urlParameters==null || urlParameters.trim().isEmpty()) return "";
-		
-		URL url;
-		HttpURLConnection connection = null;
-		try {
-			// Create connection
-			url = new URL(urlStr);
-			connection = (HttpURLConnection) url.openConnection();
-			// set POST request
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-			// set data of the parameters
-			connection.setRequestProperty("Content-Length",
-					"" + Integer.toString(urlParameters.getBytes().length));
-			connection.setRequestProperty("Content-Language", "en-US");
-			// other properties
-			connection.setUseCaches(false);
-			connection.setDoInput(true);
-			connection.setDoOutput(true);
-
-			// Send request
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.flush();
-			wr.close();
-
-			// Get Response
-			InputStream is = connection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			String line;
-			StringBuffer response = new StringBuffer();
-			while ((line = rd.readLine()) != null) {
-				response.append(line);
-				response.append('\r');
-			}
-			rd.close();
-			
-			return response.toString();
-		} catch (IOException e) {
-			appLogger.error("Failled to get response from elasticsearch server: " + urlStr + " with parameter: " + urlParameters, e);
-		} finally {
-			if (connection != null)
-				connection.disconnect();
-		}
-
-		return "";
-	}
+	
 	
 	
 	
@@ -309,6 +234,7 @@ public class QueryProcessor {
 			double value = jsonQuery.getDouble("value");
 			String operator = jsonQuery.getString("operator");
 			String timestamp = getCurrentTimeMinusSeconds(frqncyInSec);
+			String ts = getCurrentTimeMinusSeconds(0);
 			
 			String s = "{\"query\":{"
 				       + "\"filtered\":{"
@@ -321,7 +247,7 @@ public class QueryProcessor {
 				             + "\"filter\":{"
 				                + "\"bool\":{\"must\":{"
 				                   + "\"range\":{"
-				                      + "\"@timestamp\":{\"gte\":\"%s\"},"
+				                      + "\"@timestamp\":{\"gte\":\"%s\", \"lte\":\"%s\"},"
 				                      + "\"_cache\":false"
 				                   + "}"
 				                + "}}"
@@ -338,7 +264,8 @@ public class QueryProcessor {
 				        + "}"
 				           
 				      + "}";
-			return String.format(s, type, timestamp, operator, value);
+			String query = String.format(s, type, timestamp, ts, operator, value);
+			return query;
 		} catch (JSONException e){
 			appLogger.error(jsonQuery + " can't be used to build search query", e);
 		}
