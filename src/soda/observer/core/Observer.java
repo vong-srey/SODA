@@ -60,6 +60,15 @@ public class Observer extends Thread{
 	
 	
 	/**
+	 * getter for obsvrFrqc
+	 */
+	public int getObserverFrequerncy(){
+		return obsvrFrqc;
+	}
+	
+	
+	
+	/**
 	 * Setup the environment for observer
 	 */
 	public void setupObserver() {

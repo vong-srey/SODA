@@ -60,6 +60,12 @@ public class QueryReader {
 	 * @param newElsSrchUrl : new url of the elasticsearch server
 	 */
 	public static void setElasticsearchSearchURL(String newElsSrchUrl){
+		if(newElsSrchUrl==null || newElsSrchUrl.trim().isEmpty()){
+			throw new IllegalArgumentException();
+		}
+		if(!newElsSrchUrl.endsWith("/_search")){
+			throw new IllegalArgumentException();
+		}
 		elsSrchUrl = newElsSrchUrl;
 	}
 	

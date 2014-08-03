@@ -1,0 +1,230 @@
+search type=="Avail" && value<=16 && value <= 16899999
+{
+
+	"query":{
+	   "match":{"type":"Avail"}
+	},
+
+	"post_filter":{
+	  "range":{
+	    "value":{
+	      "gte" : 16, "lte": 16899999
+	    }
+	  }
+	}
+
+}
+
+
+
+
+these 3 queries producing the same result: (get any event that has "type" is "Avail" and its "value" >= 16969000)
+the 3rd one is telling elasticsearch to not cache the result.
+{
+	"query":{
+	   "match":{"type":"Avail"}
+	},
+
+	"post_filter":{
+	  "range":{
+	    "value":{
+	      "gte" : 16969000
+	    }
+	  }
+	}
+}
+
+{
+  "query": {
+    "filtered": { 
+      "query": {
+        "match": { "type": "Avail" },
+		"_cache": true
+      },
+      "filter": {
+        "range": { "value": { "gte": 16969000 }}
+      }
+    }
+  }
+}
+{
+  "query": {
+    "filtered": { 
+      "query": {
+        "match": { "type": "Avail" }
+	
+      },
+      "filter": {
+        "range": { 
+           "value": { "gte": 16969000 },
+           "_cache" : false
+        }    
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+search "type" equals to "Avail" and "value" less than or equals 16969000
+{
+  "query": {
+    "filtered": { 
+      "query": {
+        "match": { "type": "Avail" }
+	
+      },
+      "filter": {
+        "range": { 
+           "value": { "lte": 16969000 },
+           "_cache" : false
+        }    
+      }
+    }
+  }
+}
+
+
+
+for range:
+lte: less than or equals
+lt:  less than
+gt:  greater than
+gte: greater than or equals
+
+
+
+
+
+
+search for "type" that is "Idle" during the last minute
+{
+  "query":{
+    "filtered":{
+	  "query":{
+	    "match":{
+		  "type":"Idle"
+		}
+      },
+	  
+	  "filter":{
+	    "range":{
+		  "@timestamp":{
+		    "gt":"now-1m"
+		  },
+		  "_cache":false
+		}
+	  }
+    }
+  }
+}
+
+
+
+
+for date range:
+
+   now             last 1d         last 2d        last 3d
+23/07/2014         22/07/2014     21/07/2014      20/07/2014
+
+if we want date  21/07/2014:    "gte":"now-2d", "lte":"now-1d"
+
+
+
+search for "type" that is "Idle" during the last minute
+{
+  "query":{
+    "filtered":{
+	  "query":{
+	    "match":{
+		  "type":"Idle"
+		}
+      },
+	  
+	  "filter":{
+ 	    "range":{
+ 	      "value":{
+ 	        "gt" : 80
+ 	      }
+		}
+	  },
+
+      "filter":{
+        "range":{
+  	      "@timestamp":{
+  	        "gt":"now-1m"
+          },
+  	      "_cache":false
+  	    }  
+  	  }
+    }
+  }
+}
+
+
+
+
+
+accurate
+{
+  "query":{
+    "filtered":{
+	  "query":{
+	    "match":{
+		  "type":"Idle"
+		}
+      },
+	  
+	  "filter":{"bool":{"must":{
+	    "range":{
+		  "@timestamp":{
+		    "gte":"2014-07-29T20:00:00"
+		  },
+		  "_cache":false
+		}
+		}}
+	  }
+    }
+  }
+}
+
+
+search for "type" that is "Idle"  and its timestamp is after "2014-07-29T11:53:45". then filter to those that its "value" less than 3.31
+
+{
+	"query":{
+		"filtered":{
+			"query":{
+				"match":{
+					"type":"Idle"
+				}
+			},
+			
+			"filter":{
+				"bool":{
+					"must":{
+						"range":{
+							"@timestamp":{
+								"gte":"2014-07-29T11:53:45"
+							},
+							
+							"_cache":false
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	"post_filter":{
+		"range":{
+			"value":{
+				"lt":3.31
+			}
+		}
+	}
+}

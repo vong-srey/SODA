@@ -25,7 +25,7 @@ public class NotifierBuilder {
 	 * @param contact : email address of contact person
 	 */
 	public void setEmailNotifier(String contact){
-		if(contact==null || contact.trim().isEmpty()){
+		if(contact==null || contact.trim().isEmpty() || !EmailNotifier.isValidEmailAddress(contact)){
 			throw new IllegalArgumentException();
 		}
 		notifiers.add(new EmailNotifier(contact));

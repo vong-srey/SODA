@@ -282,7 +282,7 @@ public class QueryProcessor {
 	public String convertOrRsltOfAndRsltToString(List<List<Map<String, String>>> rslt){
 		StringBuffer result = new StringBuffer();
 		
-		if(rslt.isEmpty() || rslt==null) return "";
+		if(rslt==null || rslt.isEmpty()) return "";
 		
 		// iterate through first level list (this is the OR level)
 		// each element of this first level list is an issue
