@@ -26,8 +26,8 @@ public class TestObserver {
 		
 		ob.setupObserver();
 		
-		assertEquals(ob.getObserverFrequerncy(), 60);
-		assertEquals(QueryReader.getElasticsearchSearchURL(), "http://172.20.20.101:9200/_search");
+		assertEquals(ob.getObserverFrequerncy(), 1);
+		assertEquals(QueryReader.getElasticsearchSearchURL(), "http://172.20.28.126:9200/_search");
 	}
 
 }

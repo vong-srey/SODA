@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import soda.observer.queryprocessor.QueryReader;
+import soda.util.config.ConfigReader;
 
 
 
@@ -54,10 +55,10 @@ public class TestQueryReader {
 	
 	@Test
 	public void testSearchElasticsearchWith(){
-		String elasticsearchUrl = "http://172.20.20.101:9200/_search";
+		String elasticsearchUrl = ConfigReader.getPropertyFrom("./ConfigForTest.cfg", "ElasticsearchSearchUrl");
 		QueryReader qr = new QueryReader();
-		String actualRsp = qr.searchElasticsearchWith(elasticsearchUrl, "{\"query\":\"\"}", "POST");
-		assertEquals(actualRsp, "");
+		String actualRsp = qr.searchElasticsearchWith(elasticsearchUrl, "{\"query\":{\"match_all\":{}}}", "POST");
+		assertTrue(!actualRsp.isEmpty());
 	}
 	
 	

@@ -277,7 +277,8 @@
 				<p>The query must be expressed in JSON string that contains an "OR" predicate of many "AND" prediates.</p>
 				<p>Example: this condition (CPU-Idle <= 90% AND CPU-IRQ > 3) OR Disk-R_in > 80 MB/sec.</p>
 				<p>Is expressed as: {"OR":[{"AND":[{"type":"Idle","value":90,"operator":"lte"},{"type":"IRQ","operator":"gt","value":3}]},{"AND":[{"type":"R_in","operator":"gt","value":80}]}]}</p>
-				<p><b>Note:</b> "operator" key can contains only these 4 values: "lte", "lt", "gte", "gt" </p>
+				<p><b>Note:</b> "operator" key can contains only these 4 values: "lte", "lt", "gte", "gt".</p>
+				<p><b style="visibility:hidden">Note:</b> "AND" and "OR" are both uppercase. </p>
 			</div>
 		</div>
 

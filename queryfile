@@ -1,2 +1,0 @@
-{"OR":[{"AND":[{"type":"Idle","value":99.2,"operator":"gte"},{"type":"ReqProcTime","operator":"lte","value":10}]},{"AND":[{"type":"ReqProcTime","operator":"lte","value":10}]}]}
-srey.vongvithyea@gmail.com

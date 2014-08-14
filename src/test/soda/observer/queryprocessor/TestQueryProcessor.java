@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import soda.observer.queryprocessor.QueryProcessor;
+import soda.util.config.ConfigReader;
 
 
 
@@ -32,7 +33,7 @@ public class TestQueryProcessor {
 	public void testGetCurrentTimeMinusSeconds() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		Date date = new Date();
-		assertEquals(dateFormat.format(date).toString(), new QueryProcessor().getCurrentTimeMinusSeconds(0));
+		assertEquals(dateFormat.format(date).toString(), new QueryProcessor().getCurrentTimeMinusSeconds(-3600*Integer.parseInt(ConfigReader.getPropertyFrom("ConfigForTest.cfg", "ElasticsearchServerTimeZone"))));
 	}
 	
 	
@@ -79,9 +80,9 @@ public class TestQueryProcessor {
 	@Test
 	public void testSearchElasticsearchAt() throws JSONException{
 		JSONObject js = new JSONObject("{\"type\":\"Idle\",\"value\":10.3,\"operator\":\"gte\"}");
-		String elasticsearchUrl = "http://172.20.20.101:9200/_search";
+		String elasticsearchUrl = ConfigReader.getPropertyFrom("./ConfigForTest.cfg", "ElasticsearchSearchUrl");
 		QueryProcessor qp = new QueryProcessor();
-		assertEquals(qp.searchElasticsearchAt(elasticsearchUrl, js, 0).toString(), "{}");
+		assertTrue(!qp.searchElasticsearchAt(elasticsearchUrl, js, 0).toString().equals("{}"));
 	}
 	
 	

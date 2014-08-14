@@ -92,13 +92,20 @@ public class Observer extends Thread{
 	public void run(){
 		while(!stopObserving.get()){
 			try {
-				Thread.sleep(obsvrFrqc * 1000); //obsvrFrqc is in seconds => multiply to get milliseconds
+				boolean debug = false;
+				try{
+					debug = ConfigReader.getProperty("Debug").equalsIgnoreCase("true");
+				} catch (Exception e){
+					appLogger.error("Debug property is incorrectly configured");
+				}
+				
+				System.out.println("debug is:" + debug);
 				
 				// we create another thread to handle this time process
 				// because this process requires connecting to elasticsearch server which can be time consuming
 				// so, it can effect to next cycle of the observer of we dt hv a seperate thread to handle this.
-				Thread t = new Thread(){
-					public void run(){
+//				Thread t = new Thread(){
+//					public void run(){
 						
 						// 3). read from elasticsearch to get query and email
 						queryReader.readObservedQuery();
@@ -128,17 +135,35 @@ public class Observer extends Thread{
 						
 						// every notifier is sending an alert message to the registered contact
 						if(!(rsltStr==null || rsltStr.trim().isEmpty())){
-							for(Notifier ntf : notifiers){
-								ntf.sendNotification(rsltStr);
-//								debug
-//								System.out.println(rsltStr);
+							if(debug){
+								System.out.println(rsltStr);
+							} else {
+								for(Notifier ntf : notifiers){
+									System.out.println("sent out email: ");
+									ntf.sendNotification(rsltStr);
+//									debug
+//									System.out.println(rsltStr);
+								}	
 							}
+							
+							int sendEmailFrqncy = 60;
+							try{
+								sendEmailFrqncy = Integer.parseInt(ConfigReader.getProperty("ResendEmailFrequency"));
+							} catch(Exception e){
+								appLogger.error("ResendEmailFrequency property is incorrectly configured");
+							}
+							
+							Thread.sleep(sendEmailFrqncy * 1000);
+						} else {
+							if(debug) System.out.println("There's nothing has been observed.");
 						}
-					}
-				};
-				
-				t.start();
-				
+//					}
+//				};
+//				
+//				t.start();
+//				
+						
+				Thread.sleep(obsvrFrqc * 1000); //obsvrFrqc is in seconds => multiply to get milliseconds
 			} catch (InterruptedException e) {
 				appLogger.error("Thread is interrupted", e);
 			}

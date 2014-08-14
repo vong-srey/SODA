@@ -50,6 +50,7 @@ public class SODAMain{
 		// Instantiate aggregator and start collecting and logging machine performance.
 		// if the program is run with "-a" flag or no-flag is specified
 		if(runAggregator){
+			System.out.println("Aggregator is running");
 			Aggregator aggregator = new Aggregator();
 			aggregator.runAggregation();
 		}
@@ -57,6 +58,7 @@ public class SODAMain{
 		// Instantiate observer and start its process
 		// if the program is run with "-o" flag or no-flag is specified
 		if(runObserver){
+			System.out.println("Observer is running");
 			Observer observer = new Observer();
 			observer.setupObserver();
 			observer.observe();

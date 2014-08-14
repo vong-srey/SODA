@@ -7,12 +7,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import soda.util.config.ConfigReader;
 import soda.util.logger.LoggerBuilder;
 
 
@@ -59,6 +61,8 @@ public class QueryProcessor {
 	 * used to log this SODA program's performances.
 	 */
 	private Logger appLogger = LoggerBuilder.getAppLogger();
+	
+	private int localTimeZone = Integer.parseInt(ConfigReader.getProperty("ElasticsearchServerTimeZone"));
 
 	
 	
@@ -319,7 +323,9 @@ public class QueryProcessor {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		// get current date time with Date()
 		Date date = new Date();
-		date.setSeconds(date.getSeconds() - seconds); // time at the last seconds
+//		date.setTime(date.getTime() - localTimeZone);
+		
+		date.setSeconds(date.getSeconds() - seconds - (localTimeZone * 3600)); // time at the last seconds
 		return dateFormat.format(date).toString();
 	}
 }

@@ -93,7 +93,7 @@ public class EmailNotifier extends Notifier{
 		// configuring smtp mail server
 		String host = "";
 		try {
-			ConfigReader.getProperty("SMTPHost");
+			host = ConfigReader.getProperty("SMTPHost");
 		} catch (NoSuchElementException e){
 			host = "zimbra"; //default value
 		}
