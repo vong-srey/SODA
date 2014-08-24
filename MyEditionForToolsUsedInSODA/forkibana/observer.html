@@ -30,6 +30,13 @@
 	<script src="jquery.js"></script>
 
 	<script>
+	
+	var orAndArr = [];
+	var or0and0 = ["OR0-AND0"];
+	orAndArr.push(or0and0);
+	
+	
+	
 	/*
 	* script to update the input boxes based on the previous value stored in elasticsearch
 	*/
@@ -227,6 +234,152 @@
 		return (!str || str.length===0);
 	}
 
+	
+	
+	/**
+	* read all the id (e.g. OR0AND0, OR0AND1, OR1AND0, OR1AND1, OR1AND2, OR2AND0, ...) of the builder.
+	* get its type, value and operator, then build json string for array or where each or contains array of and
+	*/
+	function createQueryFromQueryBuilder(){
+		// OR level
+		var jsonStr = '{ "OR": [';
+		for(var i=0; i < orAndArr.length; ){
+			
+			var arrAnd = '{ "AND": [ ';
+			
+			// AND level of each OR
+			for(var j=0; j < orAndArr[i].length; ){
+				// get selected type value
+				var selectedSubtypeElm = document.getElementById(orAndArr[i][j] + "-Subtype");
+				var selectedSubtypeValue = selectedSubtypeElm.options[selectedSubtypeElm.selectedIndex].value;
+				
+				// get seleced operator value (lte or gte)
+				var selectedOperatorElm = document.getElementById(orAndArr[i][j] + "-Operator");
+				var selectedOperatorValue = selectedOperatorElm.options[selectedOperatorElm.selectedIndex].value;
+				if(selectedOperatorValue === ""){
+					alert("Operator at: " + orAndArr[i][j] + " is not valid.");
+					return;
+				}
+				
+				// get value of value
+				var selectedValueValue = parseInt(document.getElementById(orAndArr[i][j] + "-Value").value);
+				if(isNaN(selectedValueValue)){
+					alert("Value given at: " + orAndArr[i][j] + " is not valid.");
+					return;
+				}
+				
+				// build a json string
+				var and = '{' + '"type":"' + selectedSubtypeValue + '","value":' + selectedValueValue + ',"operator":"' + selectedOperatorValue + '"}';
+				
+				// if it is the last json object, it doesn't need ","
+				j = j + 1;
+				if( j < orAndArr[i].length){
+					and = and + ",";
+				}
+				
+				// concatenate this json with the array of and json
+				arrAnd = arrAnd + and;
+			}
+			
+			// finish up an array of AND json
+			arrAnd = arrAnd += "] }";
+			i = i + 1;
+			if(i < orAndArr.length) arrAnd += ",";
+			
+			// concatenate AND array to OR array
+			jsonStr = jsonStr + arrAnd;
+		}
+		
+		jsonStr = jsonStr + "]}";
+		
+		// double check if the jsonStr is in the correct format (but, the builder is supposed to be always building a correct format)
+		if( isJsonStringValid(jsonStr) ){
+			// update the 'obsQuery' input box
+			document.getElementById('obsQuery').value = jsonStr;
+		}
+	}
+	
+	
+	
+	/**
+	* a helper method to replace the subtype selectors that corresponding to the main selector
+	* i.e.  main selector = 'CPU'  			=>  subtype selectors:  ['User (%)','Idle (%)','Combined (%)']
+	* i.e.  main selector = 'Memory-Swap'  	=>  subtype selectors:  ['Memory-Used (MB)','Swap-Used (MB)']
+	* i.e.  main selector = 'Disk'  		=>  subtype selectors:  ['Used (%)','Read in speed (MB/s)','Write out speed (MB/s)']
+	* i.e.  main selector = 'Network' 		=>  subtype selectors:  ['Used (%)','Active open connections','Packets sent', 'Packets received']
+	*/
+	function changeSubtype(selectedIDType){
+		// get the id of the selector (e.g. it can be something: OR0AND0, OR3AND5)
+		// then get the main type
+		var selectedElm = document.getElementById(selectedIDType + "-Type");
+		var selectedType = selectedElm.options[selectedElm.selectedIndex].value;
+		var subTypeElm = document.getElementById(selectedIDType + "-Subtype");
+		
+		// replace subtype selector according to the selected type
+		if (selectedType === "CPU"){
+			subTypeElm.setAttribute("ng-options", "f for f in ['User (%)','Idle (%)','Combined (%)']");
+			var options = "<option value='User'>User (%)</option><option value='Idle'>Idle (%)</option><option value='Combined'>Combined (%)</option>";
+
+ 		} else if (selectedType === "Memory-Swap"){
+			subTypeElm.setAttribute("ng-options", "f for f in ['Memory-Used (MB)','Swap-Used (MB)']");
+			var options = "<option value='Mem_used'>Memory-Used (MB)</option><option value='Swap_used'>Swap-Used (MB)</option>";
+ 			
+ 		} else if (selectedType === "Disk"){
+			subTypeElm.setAttribute("ng-options", "f for f in ['Used (%)','Read in speed (MB/s)','Write out speed (MB/s)']");
+			var options = "<option value='Used'>Used (%)</option><option value='R_in'>Read in speed (MB/s)</option><option value='W_out'>Write out speed (MB/s)</option>";
+
+		} else if (selectedType === "Network"){
+			subTypeElm.setAttribute("ng-options", "f for f in ['Used (%)','Active open connections','Packets sent', 'Packets received']");
+			var options = "<option value='ActConOpn'>Active open connections</option><option value='PcktsSent'>Packets sent</option><option value='PcktsRcv'>Packets received</option>";
+
+		} else {
+			subTypeElm.setAttribute("ng-options", "");
+			var options = "<option></option>";
+		}
+		
+		// replace subtype selector
+		subTypeElm.innerHTML = options;
+	}
+
+
+
+	/**
+	* add an OR predicate after the last OR
+	*/
+	function addORPredicate(orId){
+		$("#orPlusSign").replaceWith(" OR ");
+		var thisId = parseInt(orId.substring(2));
+		var nextIdStr = "OR" + (thisId + 1);
+		var prevIdStr = "OR" + (thisId - 1);
+		
+		// use jquery.after() to add after.
+		$("#"+prevIdStr).after('<div  class="panel-container" style="overflow:auto" id="'+orId+'"><div class="editor-option" id="'+orId+'-AND0"><label class="small">Item to be observed:</label><select class="input-small" ng-options="f for f in [\'\',\'CPU\',\'Memory-Swap\',\'Disk\',\'Network\']" onchange=\'changeSubtype("'+orId+'-AND0")\' id="'+orId+'-AND0-Type"><option value=""></option><option value="CPU">CPU</option><option value="Memory-Swap">Memory-Swap</option><option value="Disk">Disk</option><option value="Network">Network</option></select><select class="input-small" id="'+orId+'-AND0-Subtype"></select><select class="input-small" id="'+orId+'-AND0-Operator"><option></option><option value="lte">lte</option><option value="gte">gte</option></select><input class="input-small" type="text" id="'+orId+'-AND0-Value"></input><i class="pointer icon-plus-sign" onclick=\'addANDPredicate("'+orId+'-AND1")\' id="addAndFor'+orId+'-AND1"></i></div><div><i class="icon-plus pointer" onclick=\'addORPredicate("'+nextIdStr+'")\' id="orPlusSign"></i></div></div>');
+
+		// push a new array to orAndArr (orAndArr is used to built json string at the end)
+		var orIdAnd0 = [orId + "-AND0"];
+		orAndArr.push(orIdAnd0);
+	}
+	
+	
+	
+	/**
+	* add an AND predicate to the its OR level
+	*/
+	function addANDPredicate(andId){
+		// push an element AND to the appropriate array (orAndArr is used to built json string at the end)
+		var orId = parseInt(andId.substr(2, andId.indexOf("-")));
+		orAndArr[orId].push(andId);
+		
+		$( "#addAndFor"+andId ).replaceWith(" AND ");
+		var indexOfNumber = andId.indexOf("AND")+3;
+		var thisId = parseInt(andId.substring(indexOfNumber));
+		var nextIdStr = andId.substr(0,indexOfNumber) + (thisId + 1);
+		var prevIdStr = andId.substr(0,indexOfNumber) + (thisId - 1);
+		
+		// use jquery.after() to add after.
+		$("#"+prevIdStr).after('<div class="editor-option" id="'+andId+'"><label class="small">Item to be observed:</label><select class="input-small" ng-options="f for f in [\'\',\'CPU\',\'Memory-Swap\',\'Disk\',\'Network\']" onchange=\'changeSubtype("'+andId+'")\' id="'+andId+'-Type"><option value=""></option><option value="CPU">CPU</option><option value="Memory-Swap">Memory-Swap</option><option value="Disk">Disk</option><option value="Network">Network</option></select><select class="input-small" id="'+andId+'-Subtype"></select><select class="input-small" id="'+andId+'-Operator"><option></option><option value="lte">lte</option><option value="gte">gte</option></select><input class="input-small" type="text" id="'+andId+'-Value"></input><i class="pointer icon-plus-sign" onclick=\'addANDPredicate("'+nextIdStr+'")\' id="addAndFor'+nextIdStr+'"></i></div>');
+	}
+
 	</script>
 
 	<style>
@@ -243,6 +396,7 @@
 	<link rel="stylesheet" href="css/bootstrap-responsive.min.css">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
 
+	<!-- The top bar of the page-->
 	<div ng-cloak="" ng-repeat="alert in dashAlerts.list" class="alert-{{alert.severity}} dashboard-notice" ng-show="$last"><button type="button" class="close" ng-click="dashAlerts.clear(alert)" style="padding-right:50px">&times;</button> <strong>{{alert.title}}</strong> 
 
 		<span ng-bind-html="alert.text"></span>
@@ -264,43 +418,71 @@
 		</div>
 	</div>
 
+	<!-- second part: Query, Query Builder, Email, and Save button -->
 	<div class="panel nospace ng-scope ng-pristine ng-valid ui-droppable ui-resizable" style="position: relative; width: 100%; color:white" >
 
 		<div class="panel-container ng-scope" style="overflow:auto">
-			<div class"ng-scope">
-				<div class="panel-text panel-title" style="position: relative; height: 3em"> QUERY TO BE OBSERVED: </div>
-				<div><input class="search-query panel-query ng-pristine ng-valid  has-remove pull-right" type="text" style="position: relative; width: 80%; " id="obsQuery"></input></div>
+			
+			<div  class="panel-container ng-scope" style="overflow:auto; border:hidden">
+				
+				<!-- Query to be observed-->
+				<div class"ng-scope">
+					<div class="panel-text panel-title" style="position: relative; height: 3em"> QUERY TO BE OBSERVED: </div>
+					<div class="panel-text panel-title" style="position: relative;"><input class="search-query panel-query ng-pristine ng-valid  has-remove pull-right" type="text" style="position: relative; width: 80%; " id="obsQuery"></input></div>
+				</div>
+				
+				<!-- Instruction help -->
+				<div class="pull-right">
+					<p style="height:1em"></p>
+					<p>The query must be expressed in JSON string that contains an "OR" predicate of many "AND" prediates. You can use below query builder to build the query.</p>
+					<p>Example: this condition (CPU-Idle <= 90% AND CPU-IRQ > 3) OR Disk-R_in > 80 MB/sec.</p>
+					<p>Is expressed as: {"OR":[{"AND":[{"type":"Idle","value":90,"operator":"lte"},{"type":"IRQ","operator":"gt","value":3}]},{"AND":[{"type":"R_in","operator":"gt","value":80}]}]}</p>
+					<p><b>Note:</b> "operator" key can contains only these 4 values: "lte", "lt", "gte", "gt" </p>
+				</div>			
+			
 			</div>
+			
+			
+			<!-- Query Builder -->
+			<div  class="panel-container ng-scope" style="overflow:auto; border:hidden" id="query">
+				<div>
+					<div class="panel-text panel-title" style="position: relative; height: 2em"> Query Builder: </div>
+					<p style="text-align: right" class="small"> You can build the query to be observed using this builder. </p>
+				</div>
+				
+				<!-- First OR builder-->
+				<div  class="panel-container" style="overflow:auto" id="OR0">
+				    <div class="editor-option" id="OR0-AND0"><label class="small">Item to be observed:</label><select class="input-small" ng-options="f for f in ['','CPU','Memory-Swap','Disk','Network']" onchange="changeSubtype('OR0-AND0')" id="OR0-AND0-Type"><option value=""></option><option value="CPU">CPU</option><option value="Memory-Swap">Memory-Swap</option><option value="Disk">Disk</option><option value="Network">Network</option></select><select class="input-small" id="OR0-AND0-Subtype"></select><select class="input-small" id="OR0-AND0-Operator"><option></option><option value="lte">lte</option><option value="gte">gte</option></select><input class="input-small" type="text" id="OR0-AND0-Value"></input><i class="pointer icon-plus-sign" onclick="addANDPredicate('OR0-AND1')" id="addAndForOR0-AND1"></i></div>
+					<div><i class="icon-plus pointer" onclick="addORPredicate('OR1')" id="orPlusSign"></i></div>
+			   </div>
 
-			<div class="pull-right">
-				<p style="height:1em"></p>
-				<p>The query must be expressed in JSON string that contains an "OR" predicate of many "AND" prediates.</p>
-				<p>Example: this condition (CPU-Idle <= 90% AND CPU-IRQ > 3) OR Disk-R_in > 80 MB/sec.</p>
-				<p>Is expressed as: {"OR":[{"AND":[{"type":"Idle","value":90,"operator":"lte"},{"type":"IRQ","operator":"gt","value":3}]},{"AND":[{"type":"R_in","operator":"gt","value":80}]}]}</p>
-				<p><b>Note:</b> "operator" key can contains only these 4 values: "lte", "lt", "gte", "gt".</p>
-                <p><b style="visibility:hidden">Note:</b> "AND" and "OR" are both uppercase. </p>
 			</div>
+			
+   			<!-- Create query button-->
+		   	<div >
+		   		<button class="btn pull-right" onclick="createQueryFromQueryBuilder()">Create query</button>
+		   	</div>
+				
 		</div>
+		
 
 
+		<!-- input box for user type in email address-->
 		<div class="panel-container ng-scope" style="overflow:auto"> 
 			<div class"ng-scope">
 				<div class="panel-title" style="position: relative; height: 3em">Inform the issue to:</div>
+				<p   style="text-align: right"  class="small">Please type in an email address of the person who the alert will be sent to.</p>
 				<div><input class="search-query panel-query ng-pristine ng-valid  has-remove pull-right" type="text" style="position: relative; width: 80%;" id="receiverEmail"></input></div>
 			</div>
-
-			<div class="pull-right">
-				<p style="height:1em"></p>
-				<p>Please type in an email address of the person who the alert will be sent to.</p>
-				<p style="visibility:hidden">Is expressed as: {"OR":[{"AND":[{"type":"Idle","value":90,"operator":"lte"},{"type":"IRQ","operator":"gt","value":3}]},{"AND":[{"type":"R_in","operator":"gt","value":80}]}]}</p>
-			</div>
 		</div>
-
+		
 	</div>
 
+	<!--Save button -->
 	<div class="modal-footer">
 		<button class="btn btn-success pull-right" onclick="saveQueryAndEmail()">Save</button>
 	</div>
 
 </body>
 </html>
+
