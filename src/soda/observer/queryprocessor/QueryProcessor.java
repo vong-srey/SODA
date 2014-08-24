@@ -208,7 +208,7 @@ public class QueryProcessor {
 				srchRslts.put(RPRT_HOST, src.getString("host"));
 				srchRslts.put(RPRT_TYPE, src.getString("type"));
 				srchRslts.put(RPRT_TIME, src.getString("@timestamp"));
-				srchRslts.put(RPRT_VALUE, "" + src.getDouble("value"));
+				srchRslts.put(RPRT_VALUE, "" + src.getInt("value"));
 				break;
 			}
 		} catch (JSONException e){
@@ -235,7 +235,7 @@ public class QueryProcessor {
 		try{
 			// e.g. jsonQuery = {"type":"Idle","value":10.3,"operator":"gte"}
 			String type = jsonQuery.getString("type");
-			double value = jsonQuery.getDouble("value");
+			int value = jsonQuery.getInt("value");
 			String operator = jsonQuery.getString("operator");
 			String timestamp = getCurrentTimeMinusSeconds(frqncyInSec);
 			String ts = getCurrentTimeMinusSeconds(0);
@@ -262,7 +262,7 @@ public class QueryProcessor {
 				        + "\"post_filter\":{"
 				           + "\"range\":{"
 				              + "\"value\":{"
-				                 + "\"%s\":%f"
+				                 + "\"%s\":%d"
 				              + "}"
 				           + "}"
 				        + "}"

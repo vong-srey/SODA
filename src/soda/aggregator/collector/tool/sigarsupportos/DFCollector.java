@@ -95,7 +95,7 @@ public class DFCollector extends CollectorTool{
 			strBuilder.append(volume.getAvail());
 			strBuilder.append(" ");
 			
-			strBuilder.append(getOneDecPerc(volume.getUsePercent() ));
+			strBuilder.append((int)(volume.getUsePercent()*100));
 		
 		} catch (SigarException e){ //mostly occure in Windows when the Drive is not available
 			// if device is not available

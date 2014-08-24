@@ -61,19 +61,19 @@ public class CPUCollector extends CollectorTool{
 		 * in setupLogHeader() method 
 		 * ***********************************************************************************/
 		strBuilder.setLength(0);
-		strBuilder.append(getOneDecPerc(cpu.getUser()));
+		strBuilder.append((int)(cpu.getUser()*100));
 		strBuilder.append(" ");
-		strBuilder.append(getOneDecPerc(cpu.getSys()));
+		strBuilder.append((int)(cpu.getSys()*100));
 		strBuilder.append(" ");
-		strBuilder.append(getOneDecPerc(cpu.getIdle()));
+		strBuilder.append((int)(cpu.getIdle()*100));
 		strBuilder.append(" ");
-		strBuilder.append(getOneDecPerc(cpu.getWait()));
+		strBuilder.append((int)(cpu.getWait()*100));
 		strBuilder.append(" ");
-		strBuilder.append(getOneDecPerc(cpu.getNice()));
+		strBuilder.append((int)(cpu.getNice()*100));
 		strBuilder.append(" ");
-		strBuilder.append(getOneDecPerc(cpu.getCombined()));
+		strBuilder.append((int)(cpu.getCombined()*100));
 		strBuilder.append(" ");
-		strBuilder.append(getOneDecPerc(cpu.getUser()));
+		strBuilder.append((int)(cpu.getUser()*100));
 		
 		performance.put(VALUE, strBuilder.toString());
 		strBuilder.setLength(0);

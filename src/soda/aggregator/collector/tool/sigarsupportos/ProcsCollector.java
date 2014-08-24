@@ -99,13 +99,13 @@ public class ProcsCollector extends CollectorTool{
 		
 		try{
 			ProcCpu procCpu = sigar.getProcCpu(pid);
-			strBuilder.append(getFormatedStartTime(procCpu.getStartTime()));			// time it was strated in second need to convert to a proper readable time
+			strBuilder.append(getFormatedStartTime(procCpu.getStartTime()));						// time it was strated in second need to convert to a proper readable time
 			strBuilder.append(" ");
 			strBuilder.append(formatNumb(procCpu.getSys()));										// process cpu sys time
 			strBuilder.append(" ");
 			strBuilder.append(formatNumb(procCpu.getUser()));										// process cpu user time
 			strBuilder.append(" ");
-			strBuilder.append(getOneDecPerc(procCpu.getPercent()));									// get process cpu usage
+			strBuilder.append((int)(procCpu.getPercent()*100));										// get process cpu usage
 			strBuilder.append(" ");
 		} catch (SigarException e){
 			// if getProcCpu(pid) throws exception, means it cannot retrieve data => log as unknown ???
@@ -114,7 +114,7 @@ public class ProcsCollector extends CollectorTool{
 		
 		try{
 			ProcState procState = sigar.getProcState(pid);
-			strBuilder.append(procState.getState());									// the state of the process (Running, Zomibe, Idle, Sleep, Stop, )
+			strBuilder.append(procState.getState());												// the state of the process (Running, Zomibe, Idle, Sleep, Stop, )
 			strBuilder.append(" ");
 			strBuilder.append(formatNumb(procState.getThreads()));									// the number of active threads running in this process
 			strBuilder.append(" ");
