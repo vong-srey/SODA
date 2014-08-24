@@ -35,12 +35,16 @@
 	var or0and0 = ["OR0-AND0"];
 	orAndArr.push(or0and0);
 	
+	if(elasticsearchServer===null || elasticsearchServer===undefined){
+		var elasticsearchServer = "http://"+window.location.hostname+":9200";
+	}
 	
 	
 	/*
 	* script to update the input boxes based on the previous value stored in elasticsearch
 	*/
 	function searchForStoredObserver(){
+
 		var qr='{"query":{"match":{"_type":"observer"}}}';
 		
 		var url = elasticsearchServer + "/_search";
@@ -353,7 +357,7 @@
 		var prevIdStr = "OR" + (thisId - 1);
 		
 		// use jquery.after() to add after.
-		$("#"+prevIdStr).after('<div  class="panel-container" style="overflow:auto" id="'+orId+'"><div class="editor-option" id="'+orId+'-AND0"><label class="small">Item to be observed:</label><select class="input-small" ng-options="f for f in [\'\',\'CPU\',\'Memory-Swap\',\'Disk\',\'Network\']" onchange=\'changeSubtype("'+orId+'-AND0")\' id="'+orId+'-AND0-Type"><option value=""></option><option value="CPU">CPU</option><option value="Memory-Swap">Memory-Swap</option><option value="Disk">Disk</option><option value="Network">Network</option></select><select class="input-small" id="'+orId+'-AND0-Subtype"></select><select class="input-small" id="'+orId+'-AND0-Operator"><option></option><option value="lte">lte</option><option value="gte">gte</option></select><input class="input-small" type="text" id="'+orId+'-AND0-Value"></input><i class="pointer icon-plus-sign" onclick=\'addANDPredicate("'+orId+'-AND1")\' id="addAndFor'+orId+'-AND1"></i></div><div><i class="icon-plus pointer" onclick=\'addORPredicate("'+nextIdStr+'")\' id="orPlusSign"></i></div></div>');
+		$("#"+prevIdStr).after('<div  class="panel-container" style="overflow:auto" id="'+orId+'"> <div class="editor-option" id="'+orId+'-AND0"> <label class="small">Item to be observed:</label> <select class="input-small" ng-options="f for f in [\'\',\'CPU\',\'Memory-Swap\',\'Disk\',\'Network\']" onchange=\'changeSubtype("'+orId+'-AND0")\' id="'+orId+'-AND0-Type"> <option value=""> </option> <option value="CPU">CPU</option> <option value="Memory-Swap">Memory-Swap</option> <option value="Disk">Disk</option> <option value="Network">Network</option> </select> <select class="input-small" id="'+orId+'-AND0-Subtype"> </select> <select class="input-mini" id="'+orId+'-AND0-Operator"> <option> </option> <option value="lte">lte</option> <option value="gte">gte</option> </select> <input class="input-small" type="text" id="'+orId+'-AND0-Value"> </input> <i class="pointer icon-plus-sign" onclick=\'addANDPredicate("'+orId+'-AND1")\' id="addAndFor'+orId+'-AND1"> </i> </div> <div> <i class="icon-plus pointer" onclick=\'addORPredicate("'+nextIdStr+'")\' id="orPlusSign"> </i> </div> </div>');
 
 		// push a new array to orAndArr (orAndArr is used to built json string at the end)
 		var orIdAnd0 = [orId + "-AND0"];
@@ -377,7 +381,7 @@
 		var prevIdStr = andId.substr(0,indexOfNumber) + (thisId - 1);
 		
 		// use jquery.after() to add after.
-		$("#"+prevIdStr).after('<div class="editor-option" id="'+andId+'"><label class="small">Item to be observed:</label><select class="input-small" ng-options="f for f in [\'\',\'CPU\',\'Memory-Swap\',\'Disk\',\'Network\']" onchange=\'changeSubtype("'+andId+'")\' id="'+andId+'-Type"><option value=""></option><option value="CPU">CPU</option><option value="Memory-Swap">Memory-Swap</option><option value="Disk">Disk</option><option value="Network">Network</option></select><select class="input-small" id="'+andId+'-Subtype"></select><select class="input-small" id="'+andId+'-Operator"><option></option><option value="lte">lte</option><option value="gte">gte</option></select><input class="input-small" type="text" id="'+andId+'-Value"></input><i class="pointer icon-plus-sign" onclick=\'addANDPredicate("'+nextIdStr+'")\' id="addAndFor'+nextIdStr+'"></i></div>');
+		$("#"+prevIdStr).after('<div class="editor-option" id="'+andId+'"> <label class="small">Item to be observed:</label> <select class="input-small" ng-options="f for f in [\'\',\'CPU\',\'Memory-Swap\',\'Disk\',\'Network\']" onchange=\'changeSubtype("'+andId+'")\' id="'+andId+'-Type"> <option value=""> </option> <option value="CPU">CPU</option> <option value="Memory-Swap">Memory-Swap</option> <option value="Disk">Disk</option> <option value="Network">Network</option> </select> <select class="input-small" id="'+andId+'-Subtype"> </select> <select class="input-mini" id="'+andId+'-Operator"> <option> </option> <option value="lte">lte</option> <option value="gte">gte</option> </select> <input class="input-small" type="text" id="'+andId+'-Value"> </input> <i class="pointer icon-plus-sign" onclick=\'addANDPredicate("'+nextIdStr+'")\' id="addAndFor'+nextIdStr+'"> </i> </div>');
 	}
 
 	</script>
@@ -452,7 +456,7 @@
 				
 				<!-- First OR builder-->
 				<div  class="panel-container" style="overflow:auto" id="OR0">
-				    <div class="editor-option" id="OR0-AND0"><label class="small">Item to be observed:</label><select class="input-small" ng-options="f for f in ['','CPU','Memory-Swap','Disk','Network']" onchange="changeSubtype('OR0-AND0')" id="OR0-AND0-Type"><option value=""></option><option value="CPU">CPU</option><option value="Memory-Swap">Memory-Swap</option><option value="Disk">Disk</option><option value="Network">Network</option></select><select class="input-small" id="OR0-AND0-Subtype"></select><select class="input-small" id="OR0-AND0-Operator"><option></option><option value="lte">lte</option><option value="gte">gte</option></select><input class="input-small" type="text" id="OR0-AND0-Value"></input><i class="pointer icon-plus-sign" onclick="addANDPredicate('OR0-AND1')" id="addAndForOR0-AND1"></i></div>
+				    <div class="editor-option" id="OR0-AND0"> <label class="small">Item to be observed:</label> <select class="input-small" ng-options="f for f in ['','CPU','Memory-Swap','Disk','Network']" onchange="changeSubtype('OR0-AND0')" id="OR0-AND0-Type"> <option value=""> </option> <option value="CPU">CPU</option> <option value="Memory-Swap">Memory-Swap</option> <option value="Disk">Disk</option> <option value="Network">Network</option> </select> <select class="input-small" id="OR0-AND0-Subtype"> </select> <select class="input-mini" id="OR0-AND0-Operator"> <option> </option> <option value="lte">lte</option> <option value="gte">gte</option> </select> <input class="input-small" type="text" id="OR0-AND0-Value"> </input> <i class="pointer icon-plus-sign" onclick="addANDPredicate('OR0-AND1')" id="addAndForOR0-AND1"> </i> </div>
 					<div><i class="icon-plus pointer" onclick="addORPredicate('OR1')" id="orPlusSign"></i></div>
 			   </div>
 
