@@ -192,8 +192,6 @@ public class QueryProcessor {
 		// e.g of the rspStr = {"_shards":{"total":35,"failed":0,"successful":35},"hits":{"hits":[{"_index":"logstash-2014.07.29","_type":"Idle","_source":{"@timestamp":"2014-07-29T22:36:00.668Z","dev":"CPUs","host":"localhost.localdomain","type":"Idle","value":85.2},"_id":"6DeFlaE3RFGWK7P8VAQT8w","_score":2.609438},{"_index":"logstash-2014.07.29","_type":"Idle","_source":{"@timestamp":"2014-07-29T22:58:00.668Z","dev":"CPUs","host":"localhost.localdomain","type":"Idle","value":85.2},"_id":"z6pLbZb8SLyGa7oEwMeslQ","_score":2.252763},{"_index":"logstash-2014.07.29","_type":"Idle","_source":{"@timestamp":"2014-07-29T20:36:00.668Z","dev":"CPUs","host":"localhost.localdomain","type":"Idle","value":85.2},"_id":"JCEKP5BxRgSdpHcbbjTNGg","_score":2.098612},{"_index":"logstash-2014.07.29","_type":"Idle","_source":{"@timestamp":"2014-07-29T20:47:30.668Z","dev":"CPUs","host":"localhost.localdomain","type":"Idle","value":85.2},"_id":"aEs7VVQUT8effkjUFuz88g","_score":1.4054651}],"total":4,"max_score":2.609438},"took":8,"timed_out":false}
 		String rspStr = QueryReader.searchElasticsearchWith(urlStr, urlParameters, "POST");
 		if (rspStr == null || rspStr.trim().isEmpty()) return srchRslts;
-//		debug
-//		System.out.println(urlParameters + "\n" + rspStr);
 		
 		// process the result "rspStr" into a map that can be understood.
 		try{
@@ -323,7 +321,6 @@ public class QueryProcessor {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		// get current date time with Date()
 		Date date = new Date();
-//		date.setTime(date.getTime() - localTimeZone);
 		
 		date.setSeconds(date.getSeconds() - seconds - (localTimeZone * 3600)); // time at the last seconds
 		return dateFormat.format(date).toString();
