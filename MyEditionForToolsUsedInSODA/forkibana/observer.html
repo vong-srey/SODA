@@ -300,6 +300,15 @@
 		if( isJsonStringValid(jsonStr) ){
 			// update the 'obsQuery' input box
 			document.getElementById('obsQuery').value = jsonStr;
+			var email = document.getElementById('receiverEmail').value;
+
+			if(isEmailAddValid(email)){  //validate given email address
+
+				// ask if user want to save the query that the builder just created
+				if(confirm("Both query json string and email are correct. Would you like to save?")){
+					saveQueryAndEmail();
+				}
+			}
 		}
 	}
 	
